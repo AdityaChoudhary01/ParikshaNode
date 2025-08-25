@@ -2,8 +2,8 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Helmet } from 'react-helmet-async';
@@ -78,5 +78,6 @@ const ResultsPage = () => {
     </>
   );
 };
+
 
 export default ResultsPage;
