@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/Accordion"
 import { Mail, Phone } from 'lucide-react'; // Removed MapPin import
@@ -103,5 +103,6 @@ const ContactPage = () => {
         </>
     );
 };
+
 
 export default ContactPage;
