@@ -3,8 +3,8 @@ import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 
@@ -75,5 +75,6 @@ const AdminUserListPage = () => {
     </Card>
   );
 };
+
 
 export default AdminUserListPage;
