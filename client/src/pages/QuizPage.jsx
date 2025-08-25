@@ -5,10 +5,10 @@ import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
 import Timer from '@/components/Timer';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/Label';
 import { Helmet } from 'react-helmet-async';
 
 const QuizPage = () => {
@@ -105,5 +105,6 @@ const QuizPage = () => {
     </>
   );
 };
+
 
 export default QuizPage;
