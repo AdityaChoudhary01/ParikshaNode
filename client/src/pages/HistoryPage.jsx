@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Eye } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 
@@ -67,5 +67,6 @@ const HistoryPage = () => {
     </>
   );
 };
+
 
 export default HistoryPage;
