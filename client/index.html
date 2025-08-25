@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#5B21B6">
+
+    <title>ParikshaNode | Interactive Quizzes for Modern Learning</title>
+    <meta name="title" content="ParikshaNode | Interactive Quizzes for Modern Learning">
+    <meta name="description" content="ParikshaNode is a modern MERN stack quiz platform. Create, share, and take quizzes on various subjects with features like dark mode and per-question timers.">
+    <meta name="keywords" content="quiz app, mern stack, online quiz, student project, gniot, parikshanode, aditya choudhary, javascript quiz, react quiz">
+    <link rel="canonical" href="https://www.parikshanode.com" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.parikshanode.com">
+    <meta property="og:title" content="ParikshaNode | Interactive Quizzes for Modern Learning">
+    <meta property="og:description" content="A modern MERN stack quiz platform to create, share, and take quizzes on various subjects.">
+    <meta property="og:image" content="https://i.ibb.co/example-image.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.parikshanode.com">
+    <meta property="twitter:title" content="ParikshaNode | Interactive Quizzes for Modern Learning">
+    <meta property="twitter:description" content="A modern MERN stack quiz platform to create, share, and take quizzes on various subjects.">
+    <meta property="twitter:image" content="https://i.ibb.co/example-image.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ParikshaNode",
+      "url": "https://www.parikshanode.com",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "All",
+      "author": {
+        "@type": "Group",
+        "name": "Aditya Choudhary, Suraj Mishra, Amrita Yadav, Sachin Maurya"
+      },
+      "description": "A modern MERN stack quiz platform for creating and taking interactive quizzes.",
+      "screenshot": "https://i.ibb.co/example-screenshot.png"
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            console.log('Service Worker registered: ', registration);
+          }).catch(registrationError => {
+            console.log('Service Worker registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
