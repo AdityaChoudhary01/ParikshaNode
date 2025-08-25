@@ -3,7 +3,7 @@ import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '@/app/slices/authSlice';
 import { toast } from 'react-toastify';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -113,5 +113,6 @@ const Navbar = () => {
     </header>
   );
 };
+
 
 export default Navbar;
