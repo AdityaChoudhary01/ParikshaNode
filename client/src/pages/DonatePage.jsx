@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Coffee, Globe, Lightbulb, ShieldBan } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -70,5 +70,6 @@ const DonatePage = () => {
     </>
   );
 };
+
 
 export default DonatePage;
