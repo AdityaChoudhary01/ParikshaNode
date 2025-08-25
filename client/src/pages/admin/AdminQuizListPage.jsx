@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, PlusCircle, Edit, Trash2 } from 'lucide-react';
@@ -105,5 +105,6 @@ const AdminQuizListPage = () => {
     </Card>
   );
 };
+
 
 export default AdminQuizListPage;
