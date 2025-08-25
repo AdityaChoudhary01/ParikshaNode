@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Users, Code, Database, Palette, Wind, Github, Linkedin } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 // ---- START: Updated Team Information ----
@@ -122,5 +122,6 @@ const AboutPage = () => {
     </>
   );
 };
+
 
 export default AboutPage;
