@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { ListChecks, Users } from 'lucide-react';
 
 const AdminDashboardPage = () => {
@@ -38,5 +38,6 @@ const AdminDashboardPage = () => {
     </div>
   );
 };
+
 
 export default AdminDashboardPage;
