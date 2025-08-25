@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useFetch } from '@/hooks/useFetch';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import Loader from '@/components/Loader';
 import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -172,5 +172,6 @@ const HomePage = () => {
     </>
   );
 };
+
 
 export default HomePage;
