@@ -5,9 +5,9 @@ import { setCredentials } from '@/app/slices/authSlice';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { Helmet } from 'react-helmet-async';
 
 const LoginPage = () => {
@@ -71,3 +71,4 @@ const LoginPage = () => {
 
 
 export default LoginPage;
+
