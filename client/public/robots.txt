@@ -3,4 +3,5 @@ User-agent: *
 Allow: /
 
 # Provide the location of the sitemap
-Sitemap: https://www.parikshanode.com/sitemap.xml
+
+Sitemap: https://parikshanode.netlify.app/sitemap.xml
