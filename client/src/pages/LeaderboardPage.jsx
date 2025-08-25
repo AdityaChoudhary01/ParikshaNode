@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Award, Medal, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -76,5 +76,6 @@ const LeaderboardPage = () => {
     </>
   );
 };
+
 
 export default LeaderboardPage;
