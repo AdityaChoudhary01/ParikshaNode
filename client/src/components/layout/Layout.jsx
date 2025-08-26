@@ -39,13 +39,13 @@ const Layout = () => {
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Connect</h3>
               <div className="flex space-x-4">
-                <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://x.com/X" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Twitter className="w-6 h-6" />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://github.com/AdityaChoudhary01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Github className="w-6 h-6" />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a href="https://www.linkedin.com/in/aditya-kumar-38093a304/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Linkedin className="w-6 h-6" />
                 </a>
               </div>
@@ -63,3 +63,4 @@ const Layout = () => {
 };
 
 export default Layout;
+
