@@ -26,7 +26,7 @@ const teamMembers = [
     role: 'Frontend Developer',
     bio: 'Amrita brought the application to life with her expertise in React and state management, building the interactive quiz and user dashboard components. She is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
     imagePlaceholder: <Users className="w-16 h-16 text-muted-foreground" />,
-    github: 'https://github.com/',
+    github: 'https://github.com/amritalearns',
     linkedin: 'https://www.linkedin.com/in/amrita-yadav-a28192292/',
   },
   {
@@ -118,4 +118,5 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+
 
