@@ -55,7 +55,7 @@ const ContactPage = () => {
                         <CardHeader><CardTitle>Contact Information</CardTitle></CardHeader>
                         <CardContent className="space-y-4">
                             {/* The address line has been removed */}
-                            <div className="flex items-center"><Mail className="w-5 h-5 mr-3 text-primary" /><a href="mailto:support@parikshanode.com" className="hover:underline">support@parikshanode.com</a></div>
+                            <div className="flex items-center"><Mail className="w-5 h-5 mr-3 text-primary" /><a href="mailto:aadiwrld01@gmail.com" className="hover:underline">aadiwrld01@gmail.com</a></div>
                             <div className="flex items-center"><Phone className="w-5 h-5 mr-3 text-primary" /><span>+91 12345 67890</span></div>
                         </CardContent>
                     </Card>
@@ -106,4 +106,5 @@ const ContactPage = () => {
 
 
 export default ContactPage;
+
 
