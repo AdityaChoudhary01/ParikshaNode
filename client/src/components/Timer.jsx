@@ -1,8 +1,7 @@
-import React, 'react';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const Timer = ({ seconds = 600, onTimeUp }) => {
-  // Ensure seconds is a valid, positive number, otherwise default to 600
+  // Ensure seconds is a valid, positive number, otherwise default to a fallback
   const initialSeconds = Number.isFinite(seconds) && seconds > 0 ? seconds : 600;
   const [timeLeft, setTimeLeft] = useState(initialSeconds);
   const intervalRef = useRef();
@@ -22,7 +21,7 @@ const Timer = ({ seconds = 600, onTimeUp }) => {
       });
     }, 1000);
 
-    // Clear the interval when the component unmounts
+    // Clear the interval when the component unmounts or props change
     return () => clearInterval(intervalRef.current);
   }, [initialSeconds, onTimeUp]);
 
