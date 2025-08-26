@@ -28,41 +28,40 @@ const AdminLayout = () => {
   );
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-64 flex-shrink-0 bg-card p-4 border-r">
+    <div className="relative min-h-screen lg:flex">
+      {/* Mobile Sidebar Overlay */}
+      <div
+        className={cn(
+          "fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden",
+          isSidebarOpen ? "block" : "hidden"
+        )}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+      
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed top-0 left-0 z-50 h-full w-64 bg-card p-4 border-r transform transition-transform lg:translate-x-0",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
         <h2 className="text-xl font-bold mb-6">Admin Menu</h2>
         {sidebarContent}
       </aside>
 
-      {/* Mobile Sidebar */}
-      <div className={cn(
-        "fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden",
-        isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      )} onClick={() => setIsSidebarOpen(false)}></div>
-      
-      <aside className={cn(
-        "fixed top-0 left-0 z-50 h-full w-64 bg-card p-4 border-r transform transition-transform lg:hidden",
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-         <h2 className="text-xl font-bold mb-6">Admin Menu</h2>
-        {sidebarContent}
-      </aside>
-
       {/* Main Content */}
-      <main className="flex-grow p-6">
-        {/* Mobile Header */}
-        <div className="lg:hidden flex items-center mb-4">
+      <main className="flex-grow p-6 lg:ml-64">
+        {/* Mobile Header with Hamburger Button */}
+        <div className="lg:hidden flex items-center justify-between mb-4">
+          <h1 className="text-xl font-bold ml-4">Admin Panel</h1>
           <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             {isSidebarOpen ? <X/> : <Menu/>}
           </Button>
-          <h1 className="text-xl font-bold ml-4">Admin</h1>
         </div>
         <Outlet />
       </main>
     </div>
   );
 };
-
 
 export default AdminLayout;
