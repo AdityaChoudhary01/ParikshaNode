@@ -3,8 +3,9 @@ import Quiz from '../models/Quiz.js';
 import Result from '../models/Result.js';
 
 export const getQuizzes = asyncHandler(async (req, res) => {
-    
-    const quizzes = await Quiz.find({}).select('-questions.correctAnswerIndex');
+    const quizzes = await Quiz.find({})
+        .populate('createdBy', 'username')
+        .select('-questions.correctAnswerIndex');
     res.status(200).json(quizzes);
 });
 
@@ -18,7 +19,6 @@ export const getQuizById = asyncHandler(async (req, res) => {
     }
 });
 
-
 export const getQuizDetailsForAdmin = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     if (quiz) {
@@ -30,31 +30,38 @@ export const getQuizDetailsForAdmin = asyncHandler(async (req, res) => {
 });
 
 
+export const getMyQuizzes = asyncHandler(async (req, res) => {
+    const quizzes = await Quiz.find({ createdBy: req.user._id });
+    res.status(200).json(quizzes);
+});
+
+
 export const createQuiz = asyncHandler(async (req, res) => {
-    const { title, description, category, timer, questions } = req.body;
+    const { title, description, category, timerType, timer, questions } = req.body;
     const quiz = new Quiz({
-        title,
-        description,
-        category,
-        timer,
-        questions,
+        title, description, category, timerType, timer, questions,
         createdBy: req.user._id,
     });
     const createdQuiz = await quiz.save();
     res.status(201).json(createdQuiz);
 });
 
+
 export const updateQuiz = asyncHandler(async (req, res) => {
-    const { title, description, category, timer, questions } = req.body;
+    const { title, description, category, timerType, timer, questions } = req.body;
     const quiz = await Quiz.findById(req.params.id);
 
     if (quiz) {
-        quiz.title = title || quiz.title;
-        quiz.description = description || quiz.description;
-        quiz.category = category || quiz.category;
-        quiz.timer = timer || quiz.timer;
-        quiz.questions = questions || quiz.questions;
-
+        if (quiz.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+            res.status(403);
+            throw new Error('User not authorized to update this quiz');
+        }
+        quiz.title = title;
+        quiz.description = description;
+        quiz.category = category;
+        quiz.timerType = timerType;
+        quiz.timer = timer;
+        quiz.questions = questions;
         const updatedQuiz = await quiz.save();
         res.status(200).json(updatedQuiz);
     } else {
@@ -67,27 +74,29 @@ export const updateQuiz = asyncHandler(async (req, res) => {
 export const deleteQuiz = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     if (quiz) {
+        if (quiz.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+            res.status(403);
+            throw new Error('User not authorized to delete this quiz');
+        }
         await quiz.deleteOne();
-        await Result.deleteMany({ quiz: req.params.id }); // Also delete associated results
-        res.status(200).json({ message: 'Quiz and associated results removed' });
+        await Result.deleteMany({ quiz: req.params.id });
+        res.status(200).json({ message: 'Quiz removed' });
     } else {
         res.status(404);
         throw new Error('Quiz not found');
     }
 });
 
-export const submitQuiz = asyncHandler(async (req, res) => {
-    const { userAnswers } = req.body; // Expects an object like { "questionId": answerIndex }
-    const quiz = await Quiz.findById(req.params.id);
 
+export const submitQuiz = asyncHandler(async (req, res) => {
+    const { userAnswers } = req.body;
+    const quiz = await Quiz.findById(req.params.id);
     if (!quiz) {
         res.status(404);
         throw new Error('Quiz not found');
     }
-
     let score = 0;
     const detailedAnswers = [];
-
     quiz.questions.forEach((question) => {
         const userAnswerIndex = userAnswers[question._id.toString()];
         const isCorrect = userAnswerIndex === question.correctAnswerIndex;
@@ -102,10 +111,8 @@ export const submitQuiz = asyncHandler(async (req, res) => {
             isCorrect: isCorrect,
         });
     });
-
     const totalQuestions = quiz.questions.length;
     const percentage = (score / totalQuestions) * 100;
-
     const result = new Result({
         user: req.user._id,
         quiz: quiz._id,
@@ -114,7 +121,6 @@ export const submitQuiz = asyncHandler(async (req, res) => {
         percentage,
         answers: detailedAnswers,
     });
-
     const savedResult = await result.save();
     res.status(201).json({ resultId: savedResult._id });
 });
