@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux'; 
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
@@ -16,6 +17,7 @@ const QuizFormPage = () => {
   const { id: quizId } = useParams();
   const isEditMode = Boolean(quizId);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth); // Get user for role check
 
   const { data: existingQuiz, isLoading: isFetching } = useFetch(isEditMode ? `/quizzes/${quizId}/details` : null);
 
@@ -76,7 +78,14 @@ const QuizFormPage = () => {
         await api.post('/quizzes', quizData);
         toast.success('Quiz created successfully!');
       }
-      navigate('/admin/quizzes');
+      
+      // ✅ Intelligent redirect based on user role
+      if (user.role === 'admin') {
+        navigate('/admin/quizzes');
+      } else {
+        navigate('/my-quizzes');
+      }
+
     } catch (err) {
       toast.error(err.response?.data?.message || 'An error occurred.');
     } finally {
@@ -94,7 +103,6 @@ const QuizFormPage = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Quiz Details Section */}
           <div className="space-y-4 p-4 border rounded-md">
             <h3 className="text-lg font-semibold">Quiz Details</h3>
             <div className="space-y-2">
@@ -109,7 +117,6 @@ const QuizFormPage = () => {
                 <Label htmlFor="category">Category</Label>
                 <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required />
             </div>
-            {/* Timer Type Selection */}
             <div className="space-y-2">
                 <Label>Timer Type</Label>
                 <RadioGroup value={timerType} onValueChange={setTimerType} className="flex space-x-4">
@@ -117,16 +124,14 @@ const QuizFormPage = () => {
                     <div className="flex items-center space-x-2"><RadioGroupItem value="per_question" id="per_question" /><Label htmlFor="per_question">Per-Question Timer</Label></div>
                 </RadioGroup>
             </div>
-            {/* Conditional Overall Timer Input */}
             {timerType === 'overall' && (
                 <div className="space-y-2">
                     <Label htmlFor="timer">Overall Timer (minutes)</Label>
-                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(e.target.value)} required min="1" />
+                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(parseInt(e.target.value, 10) || 0)} required min="1" />
                 </div>
             )}
           </div>
 
-          {/* Questions Section */}
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Questions</h3>
             {questions.map((q, qIndex) => (
@@ -141,7 +146,7 @@ const QuizFormPage = () => {
                     {timerType === 'per_question' && (
                         <div className="space-y-2 md:col-span-1">
                             <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
-                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value))} required />
+                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value, 10) || 0)} required />
                         </div>
                     )}
                   </div>
@@ -166,5 +171,4 @@ const QuizFormPage = () => {
     </Card>
   );
 };
-
 export default QuizFormPage;
