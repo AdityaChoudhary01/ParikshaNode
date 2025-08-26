@@ -5,10 +5,11 @@ import { logout } from '@/app/slices/authSlice';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, History } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, History, PlusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import Avatar from '@/components/ui/Avatar';
+import logo from '@/assets/logo.png';
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
@@ -20,7 +21,7 @@ const Navbar = () => {
     dispatch(logout());
     toast.success('Logged out successfully');
     navigate('/login');
-    setIsMenuOpen(false); // Close menu on logout
+    setIsMenuOpen(false);
   };
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -37,19 +38,23 @@ const Navbar = () => {
 
   return (
     <header className="bg-card/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-b">
-      <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-primary">🚀 ParikshaNode</Link>
+      {/* Removed vertical padding (py-3) to allow logo to fill the height */}
+      <nav className="container mx-auto px-4 flex justify-between items-center">
+        <Link to="/" className="flex items-center">
+          {/* Increased height to h-16. Width will scale automatically. */}
+          <img src={logo} alt="ParikshaNode Logo" className="h-16" />
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <ThemeToggle />
           
           {/* Desktop Auth Area */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-4">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -61,9 +66,10 @@ const Navbar = () => {
                   <DropdownMenuLabel>Hi, {user.username}!</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {user.role === 'admin' && (
-                    <Link to="/admin"><DropdownMenuItem><LayoutDashboard className="w-4 h-4 mr-2" />Admin Dashboard</DropdownMenuItem></Link>
+                    <Link to="/admin"><DropdownMenuItem><LayoutDashboard className="w-4 h-4 mr-2" />Admin</DropdownMenuItem></Link>
                   )}
                   <Link to="/profile"><DropdownMenuItem><UserIcon className="w-4 h-4 mr-2" />Profile</DropdownMenuItem></Link>
+                  <Link to="/my-quizzes"><DropdownMenuItem><PlusCircle className="w-4 h-4 mr-2" />My Quizzes</DropdownMenuItem></Link>
                   <Link to="/history"><DropdownMenuItem><History className="w-4 h-4 mr-2" />Quiz History</DropdownMenuItem></Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
@@ -97,6 +103,7 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Link to="/profile" onClick={closeMenu}><Button variant="outline" className="w-full justify-start"><UserIcon className="w-4 h-4 mr-2" />Profile</Button></Link>
+                  <Link to="/my-quizzes" onClick={closeMenu}><Button variant="outline" className="w-full justify-start"><PlusCircle className="w-4 h-4 mr-2" />My Quizzes</Button></Link>
                   {user.role === 'admin' && <Link to="/admin" onClick={closeMenu}><Button variant="outline" className="w-full justify-start"><LayoutDashboard className="w-4 h-4 mr-2" />Admin</Button></Link>}
                   <Button onClick={handleLogout} variant="destructive">Logout</Button>
                 </>
@@ -113,6 +120,5 @@ const Navbar = () => {
     </header>
   );
 };
-
 
 export default Navbar;
