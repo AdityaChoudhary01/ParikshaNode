@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import { Github, Linkedin, Twitter } from 'lucide-react';
+import logo from '@/assets/logo.png';
 
 const Layout = () => {
   return (
@@ -11,17 +12,19 @@ const Layout = () => {
       </main>
 
       <footer className="bg-secondary text-secondary-foreground border-t">
-        {/* The main vertical padding was changed from py-12 to py-8 */}
         <div className="container mx-auto py-8 px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
+           
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-primary">🚀 ParikshaNode</h2>
+          
+              <img src={logo} alt="ParikshaNode Logo" className="h-14" />
               <p className="text-muted-foreground">
                 Our mission is to make learning engaging and accessible for everyone through a modern, interactive quiz platform.
               </p>
             </div>
 
+            
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Navigate</h3>
               <ul className="space-y-2 text-muted-foreground">
@@ -32,6 +35,7 @@ const Layout = () => {
               </ul>
             </div>
 
+            
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Connect</h3>
               <div className="flex space-x-4">
@@ -49,7 +53,6 @@ const Layout = () => {
 
           </div>
 
-          {/* Spacing for the bottom bar was also reduced */}
           <div className="mt-8 pt-6 border-t border-border/50 text-center text-muted-foreground text-sm">
             <p>&copy; {new Date().getFullYear()} ParikshaNode App. A Final Year Project by GNIOT Students. All rights reserved.</p>
           </div>
