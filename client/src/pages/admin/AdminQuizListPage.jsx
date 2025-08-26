@@ -1,32 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/Dialog";
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { PlusCircle, Edit, Trash2, Share2, Copy } from 'lucide-react';
+import { toast } from 'react-toastify';
+import api from '@/api/axiosConfig';
 
 const AdminQuizListPage = () => {
   const { data: quizzes, isLoading, error, refetch } = useFetch('/quizzes');
-  const [isDeleting, setIsDeleting] = useState(false);
-
+  
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this quiz and all its results? This action cannot be undone.')) {
-      setIsDeleting(true);
+    if (window.confirm('Are you sure you want to delete this quiz? This will also delete all associated results.')) {
       try {
         await api.delete(`/quizzes/${id}`);
         toast.success('Quiz deleted successfully');
-        refetch(); // Refetch the list after deleting
+        refetch();
       } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to delete quiz');
-      } finally {
-        setIsDeleting(false);
+        toast.error(err?.data?.message || 'Failed to delete quiz');
       }
     }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Link copied to clipboard!');
   };
 
   if (isLoading) return <Loader />;
@@ -36,14 +39,11 @@ const AdminQuizListPage = () => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Manage Quizzes</CardTitle>
-          <CardDescription>View, create, edit, or delete quizzes.</CardDescription>
+          <CardTitle>Manage All Quizzes</CardTitle>
+          <CardDescription>View, edit, or delete any quiz on the platform.</CardDescription>
         </div>
-        <Link to="/admin/quizzes/new">
-          <Button>
-            <PlusCircle className="w-4 h-4 mr-2" />
-            Create New Quiz
-          </Button>
+        <Link to="/quiz/new">
+          <Button><PlusCircle className="w-4 h-4 mr-2" />Create New Quiz</Button>
         </Link>
       </CardHeader>
       <CardContent>
@@ -53,8 +53,7 @@ const AdminQuizListPage = () => {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Questions</TableHead>
-                <TableHead>Timer Type</TableHead>
+                <TableHead>Created By</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -64,39 +63,30 @@ const AdminQuizListPage = () => {
                   <TableRow key={quiz._id}>
                     <TableCell className="font-medium">{quiz.title}</TableCell>
                     <TableCell>{quiz.category}</TableCell>
-                    <TableCell>{quiz.questions.length}</TableCell>
-                    <TableCell className="capitalize">{quiz.timerType?.replace('_', ' ')}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <Link to={`/admin/quizzes/edit/${quiz._id}`}>
-                            <DropdownMenuItem>
-                              <Edit className="w-4 h-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuItem onClick={() => handleDelete(quiz._id)} className="text-destructive" disabled={isDeleting}>
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <TableCell className="text-muted-foreground text-sm">{quiz.createdBy?.username || 'N/A'}</TableCell>
+                    <TableCell className="text-right space-x-2">
+                       <Dialog>
+                        <DialogTrigger asChild>
+                           <Button variant="outline" size="icon"><Share2 className="w-4 h-4" /></Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader><DialogTitle>Share Quiz</DialogTitle><DialogDescription>Share this link with anyone to take the quiz.</DialogDescription></DialogHeader>
+                           <div className="space-y-2">
+                            <Label>Quiz Link</Label>
+                            <div className="flex gap-2">
+                              <Input readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
+                              <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)}><Copy className="w-4 h-4"/></Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan="5" className="h-24 text-center">
-                    No quizzes found.
-                  </TableCell>
-                </TableRow>
+                <TableRow><TableCell colSpan="4" className="h-24 text-center">No quizzes found.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -105,6 +95,5 @@ const AdminQuizListPage = () => {
     </Card>
   );
 };
-
 
 export default AdminQuizListPage;
