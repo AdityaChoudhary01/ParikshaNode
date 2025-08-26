@@ -26,10 +26,8 @@ const QuizFormPage = () => {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [timerType, setTimerType] = useState('overall');
-  // 👇 Default value restored to 10
   const [timer, setTimer] = useState(10);
   const [questions, setQuestions] = useState([
-    // 👇 Default value restored to 30
     { text: '', options: ['', '', '', ''], correctAnswerIndex: 0, timer: 30 },
   ]);
 
@@ -57,7 +55,6 @@ const QuizFormPage = () => {
   };
 
   const addQuestion = () => {
-    // 👇 New questions are added with a default timer of 30
     setQuestions([...questions, { text: '', options: ['', '', '', ''], correctAnswerIndex: 0, timer: 30 }]);
   };
 
@@ -71,8 +68,16 @@ const QuizFormPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const finalTimer = Number(timer) || 10;
+    const finalQuestions = questions.map(q => ({
+        ...q,
+        timer: Number(q.timer) || 30 
+    }));
+
+    const quizData = { title, description, category, timerType, timer: finalTimer, questions: finalQuestions };
+
     setIsLoading(true);
-    const quizData = { title, description, category, timerType, timer: Number(timer), questions };
     try {
       if (isEditMode) {
         await api.put(`/quizzes/${quizId}`, quizData);
@@ -120,7 +125,7 @@ const QuizFormPage = () => {
             {timerType === 'overall' && (
                 <div className="space-y-2">
                     <Label htmlFor="timer">Overall Timer (minutes)</Label>
-                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(parseInt(e.target.value, 10) || 1)} required min="1" />
+                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(e.target.value)} required min="1" />
                 </div>
             )}
           </div>
@@ -136,7 +141,8 @@ const QuizFormPage = () => {
                     {timerType === 'per_question' && (
                         <div className="space-y-2 md:col-span-1">
                             <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
-                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value, 10) || 5)} required />
+                            {/* 👇 Removed the aggressive fallback from onChange */}
+                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', e.target.value)} required />
                         </div>
                     )}
                   </div>
