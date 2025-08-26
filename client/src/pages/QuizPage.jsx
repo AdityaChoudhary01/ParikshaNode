@@ -8,7 +8,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
 import Timer from '@/components/Timer';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/Label';
 import { Lock } from 'lucide-react';
@@ -90,8 +90,7 @@ const QuizPage = () => {
             </div>
             {quiz.timerType === 'overall' && (
               <Timer
-                // Defensive check: Use quiz.timer OR a fallback of 10 minutes
-                seconds={(quiz.timer || 10) * 60}
+                seconds={Number.isFinite(quiz.timer) && quiz.timer > 0 ? quiz.timer * 60 : 600}
                 onTimeUp={handleSubmit}
               />
             )}
@@ -103,8 +102,7 @@ const QuizPage = () => {
                 {quiz.timerType === 'per_question' && (
                   <Timer
                     key={currentQuestionIndex}
-                    // Defensive check: Use question's timer OR a fallback of 30 seconds
-                    seconds={currentQuestion.timer || 30}
+                    seconds={Number.isFinite(currentQuestion.timer) && currentQuestion.timer > 0 ? currentQuestion.timer : 30}
                     onTimeUp={handleNext}
                   />
                 )}
