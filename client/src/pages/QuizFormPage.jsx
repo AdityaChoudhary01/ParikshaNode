@@ -26,8 +26,10 @@ const QuizFormPage = () => {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [timerType, setTimerType] = useState('overall');
+  // 👇 Default value restored to 10
   const [timer, setTimer] = useState(10);
   const [questions, setQuestions] = useState([
+    // 👇 Default value restored to 30
     { text: '', options: ['', '', '', ''], correctAnswerIndex: 0, timer: 30 },
   ]);
 
@@ -55,6 +57,7 @@ const QuizFormPage = () => {
   };
 
   const addQuestion = () => {
+    // 👇 New questions are added with a default timer of 30
     setQuestions([...questions, { text: '', options: ['', '', '', ''], correctAnswerIndex: 0, timer: 30 }]);
   };
 
@@ -104,18 +107,9 @@ const QuizFormPage = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-4 p-4 border rounded-md">
             <h3 className="text-lg font-semibold">Quiz Details</h3>
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required />
-            </div>
+            <div className="space-y-2"><Label htmlFor="title">Title</Label><Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+            <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} /></div>
+            <div className="space-y-2"><Label htmlFor="category">Category</Label><Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required /></div>
             <div className="space-y-2">
                 <Label>Timer Type</Label>
                 <RadioGroup value={timerType} onValueChange={setTimerType} className="flex space-x-4">
@@ -126,7 +120,6 @@ const QuizFormPage = () => {
             {timerType === 'overall' && (
                 <div className="space-y-2">
                     <Label htmlFor="timer">Overall Timer (minutes)</Label>
-                    {/* 👇 Added a fallback of || 1 to prevent NaN */}
                     <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(parseInt(e.target.value, 10) || 1)} required min="1" />
                 </div>
             )}
@@ -136,17 +129,13 @@ const QuizFormPage = () => {
             <h3 className="text-lg font-semibold">Questions</h3>
             {questions.map((q, qIndex) => (
               <div key={qIndex} className="p-4 border rounded-md relative">
-                <div className="flex justify-between items-center mb-4">
-                  <Label className="text-md font-medium">Question {qIndex + 1}</Label>
-                  <Button type="button" variant="ghost" size="sm" onClick={() => removeQuestion(qIndex)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-                </div>
+                <div className="flex justify-between items-center mb-4"><Label className="text-md font-medium">Question {qIndex + 1}</Label><Button type="button" variant="ghost" size="sm" onClick={() => removeQuestion(qIndex)}><Trash2 className="w-4 h-4 text-destructive" /></Button></div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <Textarea className={timerType === 'per_question' ? "md:col-span-4" : "md:col-span-5"} placeholder="Question text..." value={q.text} onChange={(e) => handleQuestionChange(qIndex, 'text', e.target.value)} required />
                     {timerType === 'per_question' && (
                         <div className="space-y-2 md:col-span-1">
                             <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
-                            {/* 👇 Added a fallback of || 5 to prevent NaN */}
                             <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value, 10) || 5)} required />
                         </div>
                     )}
