@@ -89,10 +89,7 @@ const QuizPage = () => {
               </div>
             </div>
             {quiz.timerType === 'overall' && (
-              <Timer
-                seconds={Number.isFinite(quiz.timer) && quiz.timer > 0 ? quiz.timer * 60 : 600}
-                onTimeUp={handleSubmit}
-              />
+              <Timer seconds={(quiz.timer || 10) * 60} onTimeUp={handleSubmit} />
             )}
           </CardHeader>
           <CardContent>
@@ -102,12 +99,16 @@ const QuizPage = () => {
                 {quiz.timerType === 'per_question' && (
                   <Timer
                     key={currentQuestionIndex}
-                    seconds={Number.isFinite(currentQuestion.timer) && currentQuestion.timer > 0 ? currentQuestion.timer : 30}
+                    seconds={currentQuestion.timer || 30}
                     onTimeUp={handleNext}
                   />
                 )}
               </div>
-              <RadioGroup value={userAnswers[currentQuestion._id]?.toString()} onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}>
+              {/* The fix is on the 'value' prop below */}
+              <RadioGroup
+                value={userAnswers[currentQuestion._id]?.toString() || ''}
+                onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}
+              >
                 {currentQuestion.options.map((option, index) => (
                   <div key={index} className="flex items-center space-x-2 mb-2 p-3 border rounded-md hover:bg-accent">
                     <RadioGroupItem value={index.toString()} id={`${currentQuestion._id}-${index}`} />
