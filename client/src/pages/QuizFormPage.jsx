@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux'; 
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
@@ -17,7 +17,7 @@ const QuizFormPage = () => {
   const { id: quizId } = useParams();
   const isEditMode = Boolean(quizId);
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth); // Get user for role check
+  const { user } = useSelector((state) => state.auth);
 
   const { data: existingQuiz, isLoading: isFetching } = useFetch(isEditMode ? `/quizzes/${quizId}/details` : null);
 
@@ -79,7 +79,6 @@ const QuizFormPage = () => {
         toast.success('Quiz created successfully!');
       }
       
-      // ✅ Intelligent redirect based on user role
       if (user.role === 'admin') {
         navigate('/admin/quizzes');
       } else {
@@ -127,7 +126,8 @@ const QuizFormPage = () => {
             {timerType === 'overall' && (
                 <div className="space-y-2">
                     <Label htmlFor="timer">Overall Timer (minutes)</Label>
-                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(parseInt(e.target.value, 10) || 0)} required min="1" />
+                    {/* 👇 Added a fallback of || 1 to prevent NaN */}
+                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(parseInt(e.target.value, 10) || 1)} required min="1" />
                 </div>
             )}
           </div>
@@ -146,7 +146,8 @@ const QuizFormPage = () => {
                     {timerType === 'per_question' && (
                         <div className="space-y-2 md:col-span-1">
                             <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
-                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value, 10) || 0)} required />
+                            {/* 👇 Added a fallback of || 5 to prevent NaN */}
+                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', parseInt(e.target.value, 10) || 5)} required />
                         </div>
                     )}
                   </div>
@@ -171,4 +172,5 @@ const QuizFormPage = () => {
     </Card>
   );
 };
+
 export default QuizFormPage;
