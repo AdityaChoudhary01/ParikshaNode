@@ -1,4 +1,5 @@
 import express from 'express';
+const router = express.Router();
 import {
   getQuizzes,
   getQuizById,
@@ -7,27 +8,26 @@ import {
   deleteQuiz,
   submitQuiz,
   getQuizDetailsForAdmin,
+  getMyQuizzes
 } from '../controllers/quizController.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
-const router = express.Router();
 
+router.route('/')
+  .get(getQuizzes)
+  .post(protect, createQuiz);
 
-router.route('/').get(getQuizzes);
-
-
-router.route('/').post(protect, isAdmin, createQuiz);
+router.route('/myquizzes').get(protect, getMyQuizzes);
 
 
 router.route('/:id/submit').post(protect, submitQuiz);
-
 
 router.route('/:id/details').get(protect, isAdmin, getQuizDetailsForAdmin);
 
 router
   .route('/:id')
-  .get(protect, getQuizById)         
-  .put(protect, isAdmin, updateQuiz) 
-  .delete(protect, isAdmin, deleteQuiz);
+  .get(getQuizById)
+  .put(protect, updateQuiz)
+  .delete(protect, deleteQuiz);
 
 export default router;
