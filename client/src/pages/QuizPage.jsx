@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useParams, useNavigate, Link } from 'react-router-dom'; 
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
@@ -17,14 +17,14 @@ const QuizPage = () => {
   const { id: quizId } = useParams();
   const navigate = useNavigate();
   const { data: quiz, isLoading: isQuizLoading, error } = useFetch(`/quizzes/${quizId}`);
-  const { user } = useSelector((state) => state.auth); // 👈 Get user state
+  const { user } = useSelector((state) => state.auth);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
 
   const handleNext = () => {
-    if (currentQuestionIndex < quiz.questions.length - 1) {
+    if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       handleSubmit();
@@ -42,7 +42,8 @@ const QuizPage = () => {
       const response = await api.post(`/quizzes/${quizId}/submit`, { userAnswers });
       toast.success('Quiz submitted successfully!');
       navigate(`/results/${response.data.resultId}`);
-    } catch (err) {
+    } catch (err)
+      {
       toast.error(err.response?.data?.message || 'Failed to submit quiz.');
       setIsSubmitting(false);
     }
@@ -62,10 +63,7 @@ const QuizPage = () => {
         <meta name="description" content={quiz ? quiz.description : 'Test your knowledge with ParikshaNode.'} />
       </Helmet>
       
-      {/* Add 'relative' positioning to this parent container */}
       <div className="max-w-4xl mx-auto relative">
-
-        {/* ---- START: Login Wall Overlay ---- */}
         {!user && (
           <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
             <div className="text-center p-8">
@@ -75,17 +73,12 @@ const QuizPage = () => {
                 Create an account or log in to save your score, track your history, and compete on the leaderboard.
               </p>
               <div className="flex justify-center gap-4">
-                <Link to={`/login?redirect=/quiz/${quizId}`}>
-                  <Button>Login</Button>
-                </Link>
-                <Link to={`/register?redirect=/quiz/${quizId}`}>
-                  <Button variant="outline">Sign Up</Button>
-                </Link>
+                <Link to={`/login?redirect=/quiz/${quizId}`}><Button>Login</Button></Link>
+                <Link to={`/register?redirect=/quiz/${quizId}`}><Button variant="outline">Sign Up</Button></Link>
               </div>
             </div>
           </div>
         )}
-        {/* ---- END: Login Wall Overlay ---- */}
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-x-4">
@@ -96,7 +89,11 @@ const QuizPage = () => {
               </div>
             </div>
             {quiz.timerType === 'overall' && (
-              <Timer seconds={quiz.timer * 60} onTimeUp={handleSubmit} />
+              <Timer
+                // Defensive check: Use quiz.timer OR a fallback of 10 minutes
+                seconds={(quiz.timer || 10) * 60}
+                onTimeUp={handleSubmit}
+              />
             )}
           </CardHeader>
           <CardContent>
@@ -104,7 +101,12 @@ const QuizPage = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">{currentQuestion.text}</h2>
                 {quiz.timerType === 'per_question' && (
-                  <Timer key={currentQuestionIndex} seconds={currentQuestion.timer} onTimeUp={handleNext} />
+                  <Timer
+                    key={currentQuestionIndex}
+                    // Defensive check: Use question's timer OR a fallback of 30 seconds
+                    seconds={currentQuestion.timer || 30}
+                    onTimeUp={handleNext}
+                  />
                 )}
               </div>
               <RadioGroup value={userAnswers[currentQuestion._id]?.toString()} onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}>
