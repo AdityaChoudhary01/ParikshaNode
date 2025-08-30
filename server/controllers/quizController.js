@@ -1,7 +1,11 @@
 import asyncHandler from 'express-async-handler';
 import Quiz from '../models/Quiz.js';
 import Result from '../models/Result.js';
+import { generateQuiz } from '../utils/geminiService.js';
 
+// @desc    Fetch all quizzes
+// @route   GET /api/quizzes
+// @access  Public
 export const getQuizzes = asyncHandler(async (req, res) => {
     const quizzes = await Quiz.find({})
         .populate('createdBy', 'username')
@@ -9,6 +13,9 @@ export const getQuizzes = asyncHandler(async (req, res) => {
     res.status(200).json(quizzes);
 });
 
+// @desc    Fetch a single quiz by ID (for taking the quiz)
+// @route   GET /api/quizzes/:id
+// @access  Public
 export const getQuizById = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id).select('-questions.correctAnswerIndex');
     if (quiz) {
@@ -19,6 +26,9 @@ export const getQuizById = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Fetch a single quiz with answers (for admins)
+// @route   GET /api/quizzes/:id/details
+// @access  Private/Admin
 export const getQuizDetailsForAdmin = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     if (quiz) {
@@ -29,13 +39,17 @@ export const getQuizDetailsForAdmin = asyncHandler(async (req, res) => {
     }
 });
 
-
+// @desc    Get quizzes created by the logged-in user
+// @route   GET /api/quizzes/myquizzes
+// @access  Private
 export const getMyQuizzes = asyncHandler(async (req, res) => {
     const quizzes = await Quiz.find({ createdBy: req.user._id });
     res.status(200).json(quizzes);
 });
 
-
+// @desc    Create a new quiz
+// @route   POST /api/quizzes
+// @access  Private
 export const createQuiz = asyncHandler(async (req, res) => {
     const { title, description, category, timerType, timer, questions } = req.body;
     const quiz = new Quiz({
@@ -46,7 +60,24 @@ export const createQuiz = asyncHandler(async (req, res) => {
     res.status(201).json(createdQuiz);
 });
 
+// @desc    Generate a quiz using AI
+// @route   POST /api/quizzes/generate-ai
+// @access  Private/Admin
+export const generateQuizWithAI = asyncHandler(async (req, res) => {
+  const { topic, numQuestions, difficulty } = req.body;
+  
+  if (!topic || !numQuestions || !difficulty) {
+    res.status(400);
+    throw new Error('Please provide a topic, number of questions, and difficulty.');
+  }
 
+  const quizData = await generateQuiz(topic, numQuestions, difficulty);
+  res.status(200).json(quizData);
+});
+
+// @desc    Update a quiz
+// @route   PUT /api/quizzes/:id
+// @access  Private
 export const updateQuiz = asyncHandler(async (req, res) => {
     const { title, description, category, timerType, timer, questions } = req.body;
     const quiz = await Quiz.findById(req.params.id);
@@ -70,7 +101,9 @@ export const updateQuiz = asyncHandler(async (req, res) => {
     }
 });
 
-
+// @desc    Delete a quiz
+// @route   DELETE /api/quizzes/:id
+// @access  Private
 export const deleteQuiz = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     if (quiz) {
@@ -87,7 +120,9 @@ export const deleteQuiz = asyncHandler(async (req, res) => {
     }
 });
 
-
+// @desc    Submit answers for a quiz
+// @route   POST /api/quizzes/:id/submit
+// @access  Private
 export const submitQuiz = asyncHandler(async (req, res) => {
     const { userAnswers } = req.body;
     const quiz = await Quiz.findById(req.params.id);
