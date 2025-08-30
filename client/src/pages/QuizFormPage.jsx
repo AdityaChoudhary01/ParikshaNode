@@ -11,7 +11,10 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Trash2, PlusCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/Dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+import { Trash2, PlusCircle, Sparkles } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const QuizFormPage = () => {
   const { id: quizId } = useParams();
@@ -21,6 +24,7 @@ const QuizFormPage = () => {
 
   const { data: existingQuiz, isLoading: isFetching } = useFetch(isEditMode ? `/quizzes/${quizId}/details` : null);
 
+  // State for the main quiz form
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -30,15 +34,22 @@ const QuizFormPage = () => {
   const [questions, setQuestions] = useState([
     { text: '', options: ['', '', '', ''], correctAnswerIndex: 0, timer: 30 },
   ]);
+  
+  // State for the AI generation modal
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiNumQuestions, setAiNumQuestions] = useState(5);
+  const [aiDifficulty, setAiDifficulty] = useState('Medium');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (isEditMode && existingQuiz) {
       setTitle(existingQuiz.title);
       setDescription(existingQuiz.description);
       setCategory(existingQuiz.category);
-      setTimerType(existingQuiz.timerType);
-      setTimer(existingQuiz.timer);
-      setQuestions(existingQuiz.questions.map(q => ({...q})));
+      setTimerType(existingQuiz.timerType || 'overall');
+      setTimer(existingQuiz.timer || 10);
+      setQuestions(existingQuiz.questions.map(q => ({...q, timer: q.timer || 30})));
     }
   }, [isEditMode, existingQuiz]);
 
@@ -68,11 +79,12 @@ const QuizFormPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
+    // Robustly handle empty/invalid timer fields before submission
     const finalTimer = Number(timer) || 10;
     const finalQuestions = questions.map(q => ({
         ...q,
-        timer: Number(q.timer) || 30 
+        timer: Number(q.timer) || 30
     }));
 
     const quizData = { title, description, category, timerType, timer: finalTimer, questions: finalQuestions };
@@ -92,7 +104,6 @@ const QuizFormPage = () => {
       } else {
         navigate('/my-quizzes');
       }
-
     } catch (err) {
       toast.error(err.response?.data?.message || 'An error occurred.');
     } finally {
@@ -100,71 +111,141 @@ const QuizFormPage = () => {
     }
   };
 
+  const handleGenerateQuiz = async () => {
+    if (!aiTopic) {
+      toast.error('Please enter a topic.');
+      return;
+    }
+    setIsGenerating(true);
+    try {
+      const response = await api.post('/quizzes/generate-ai', {
+        topic: aiTopic,
+        numQuestions: aiNumQuestions,
+        difficulty: aiDifficulty,
+      });
+      const aiQuiz = response.data;
+      
+      setTitle(aiQuiz.title);
+      setCategory(aiQuiz.category);
+      setDescription(aiQuiz.description);
+      setQuestions(aiQuiz.questions);
+      
+      toast.success('Quiz generated successfully! Please review and save.');
+      setIsModalOpen(false);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to generate quiz.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   if (isFetching) return <Loader />;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditMode ? 'Edit Quiz' : 'Create New Quiz'}</CardTitle>
-        <CardDescription>Fill in the details for the quiz.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="space-y-4 p-4 border rounded-md">
-            <h3 className="text-lg font-semibold">Quiz Details</h3>
-            <div className="space-y-2"><Label htmlFor="title">Title</Label><Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
-            <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} /></div>
-            <div className="space-y-2"><Label htmlFor="category">Category</Label><Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required /></div>
-            <div className="space-y-2">
-                <Label>Timer Type</Label>
-                <RadioGroup value={timerType} onValueChange={setTimerType} className="flex space-x-4">
-                    <div className="flex items-center space-x-2"><RadioGroupItem value="overall" id="overall" /><Label htmlFor="overall">Overall Timer</Label></div>
-                    <div className="flex items-center space-x-2"><RadioGroupItem value="per_question" id="per_question" /><Label htmlFor="per_question">Per-Question Timer</Label></div>
-                </RadioGroup>
-            </div>
-            {timerType === 'overall' && (
-                <div className="space-y-2">
-                    <Label htmlFor="timer">Overall Timer (minutes)</Label>
-                    <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(e.target.value)} required min="1" />
-                </div>
-            )}
+    <>
+      <Helmet>
+        <title>{isEditMode ? 'Edit Quiz' : 'Create Quiz'} | ParikshaNode</title>
+        <meta name="description" content="Create or edit a quiz with custom questions, options, and timers." />
+      </Helmet>
+      <Card>
+        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <CardTitle>{isEditMode ? 'Edit Quiz' : 'Create New Quiz'}</CardTitle>
+            <CardDescription>Fill in the details for the quiz manually or use AI.</CardDescription>
           </div>
-
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Questions</h3>
-            {questions.map((q, qIndex) => (
-              <div key={qIndex} className="p-4 border rounded-md relative">
-                <div className="flex justify-between items-center mb-4"><Label className="text-md font-medium">Question {qIndex + 1}</Label><Button type="button" variant="ghost" size="sm" onClick={() => removeQuestion(qIndex)}><Trash2 className="w-4 h-4 text-destructive" /></Button></div>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <Textarea className={timerType === 'per_question' ? "md:col-span-4" : "md:col-span-5"} placeholder="Question text..." value={q.text} onChange={(e) => handleQuestionChange(qIndex, 'text', e.target.value)} required />
-                    {timerType === 'per_question' && (
-                        <div className="space-y-2 md:col-span-1">
-                            <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
-                            {/* 👇 Removed the aggressive fallback from onChange */}
-                            <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', e.target.value)} required />
-                        </div>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {q.options.map((opt, oIndex) => (<Input key={oIndex} placeholder={`Option ${oIndex + 1}`} value={opt} onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)} required />))}
-                  </div>
-                  <div>
-                    <Label>Correct Answer</Label>
-                    <RadioGroup value={q.correctAnswerIndex.toString()} onValueChange={(value) => handleQuestionChange(qIndex, 'correctAnswerIndex', parseInt(value))} className="mt-2">
-                      {q.options.map((_, oIndex) => (<div key={oIndex} className="flex items-center space-x-2"><RadioGroupItem value={oIndex.toString()} id={`q${qIndex}-o${oIndex}`} /><Label htmlFor={`q${qIndex}-o${oIndex}`}>Option {oIndex + 1}</Label></div>))}
-                    </RadioGroup>
+          {user?.role === 'admin' && (
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="mt-4 md:mt-0"><Sparkles className="w-4 h-4 mr-2" />Generate with AI</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Generate Quiz with AI</DialogTitle>
+                  <DialogDescription>Describe the quiz you want to create.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2"><Label>Topic</Label><Input placeholder="e.g., JavaScript Basics" value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2"><Label>Number of Questions</Label><Input type="number" min="1" max="10" value={aiNumQuestions} onChange={(e) => setAiNumQuestions(Number(e.target.value))} /></div>
+                    <div className="space-y-2">
+                      <Label>Difficulty</Label>
+                      <Select value={aiDifficulty} onValueChange={setAiDifficulty}>
+                        <SelectTrigger><SelectValue/></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Easy">Easy</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Hard">Hard</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
+                <DialogFooter>
+                  <Button onClick={handleGenerateQuiz} disabled={isGenerating}>
+                    {isGenerating ? 'Generating...' : 'Generate Quiz'}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-4 p-4 border rounded-md">
+              <h3 className="text-lg font-semibold">Quiz Details</h3>
+              <div className="space-y-2"><Label htmlFor="title">Title</Label><Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+              <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} /></div>
+              <div className="space-y-2"><Label htmlFor="category">Category</Label><Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} required /></div>
+              <div className="space-y-2">
+                  <Label>Timer Type</Label>
+                  <RadioGroup value={timerType} onValueChange={setTimerType} className="flex space-x-4">
+                      <div className="flex items-center space-x-2"><RadioGroupItem value="overall" id="overall" /><Label htmlFor="overall">Overall Timer</Label></div>
+                      <div className="flex items-center space-x-2"><RadioGroupItem value="per_question" id="per_question" /><Label htmlFor="per_question">Per-Question Timer</Label></div>
+                  </RadioGroup>
               </div>
-            ))}
-          </div>
+              {timerType === 'overall' && (
+                  <div className="space-y-2">
+                      <Label htmlFor="timer">Overall Timer (minutes)</Label>
+                      <Input id="timer" type="number" value={timer} onChange={(e) => setTimer(e.target.value)} required min="1" />
+                  </div>
+              )}
+            </div>
 
-          <Button type="button" variant="outline" onClick={addQuestion}><PlusCircle className="w-4 h-4 mr-2" />Add Question</Button>
-          <div className="flex justify-end"><Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : (isEditMode ? 'Update Quiz' : 'Create Quiz')}</Button></div>
-        </form>
-      </CardContent>
-    </Card>
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold">Questions</h3>
+              {questions.map((q, qIndex) => (
+                <div key={qIndex} className="p-4 border rounded-md relative">
+                  <div className="flex justify-between items-center mb-4"><Label className="text-md font-medium">Question {qIndex + 1}</Label><Button type="button" variant="ghost" size="sm" onClick={() => removeQuestion(qIndex)}><Trash2 className="w-4 h-4 text-destructive" /></Button></div>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                      <Textarea className={timerType === 'per_question' ? "md:col-span-4" : "md:col-span-5"} placeholder="Question text..." value={q.text} onChange={(e) => handleQuestionChange(qIndex, 'text', e.target.value)} required />
+                      {timerType === 'per_question' && (
+                          <div className="space-y-2 md:col-span-1">
+                              <Label htmlFor={`q${qIndex}-timer`}>Timer (sec)</Label>
+                              <Input id={`q${qIndex}-timer`} type="number" min="5" value={q.timer} onChange={(e) => handleQuestionChange(qIndex, 'timer', e.target.value)} required />
+                          </div>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {q.options.map((opt, oIndex) => (<Input key={oIndex} placeholder={`Option ${oIndex + 1}`} value={opt} onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)} required />))}
+                    </div>
+                    <div>
+                      <Label>Correct Answer</Label>
+                      <RadioGroup value={q.correctAnswerIndex.toString()} onValueChange={(value) => handleQuestionChange(qIndex, 'correctAnswerIndex', parseInt(value))} className="mt-2">
+                        {q.options.map((_, oIndex) => (<div key={oIndex} className="flex items-center space-x-2"><RadioGroupItem value={oIndex.toString()} id={`q${qIndex}-o${oIndex}`} /><Label htmlFor={`q${qIndex}-o${oIndex}`}>Option {oIndex + 1}</Label></div>))}
+                      </RadioGroup>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Button type="button" variant="outline" onClick={addQuestion}><PlusCircle className="w-4 h-4 mr-2" />Add Question</Button>
+            <div className="flex justify-end"><Button type="submit" disabled={isLoading}>{isLoading ? 'Saving...' : (isEditMode ? 'Update Quiz' : 'Create Quiz')}</Button></div>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
