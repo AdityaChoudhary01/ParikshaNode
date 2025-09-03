@@ -7,8 +7,8 @@ import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
 import Timer from '@/components/Timer';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/Label';
 import { Lock, Tag, Clock, HelpCircle } from 'lucide-react';
@@ -162,3 +162,4 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
+
