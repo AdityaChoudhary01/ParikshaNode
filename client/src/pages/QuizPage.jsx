@@ -11,23 +11,25 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/Label';
-import { Lock } from 'lucide-react';
+// ADDED: Imported new icons
+import { Lock, HelpCircle, Clock } from 'lucide-react';
 
 const QuizPage = () => {
   const { id: quizId } = useParams();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  // Fetch quiz and attempt status
   const { data: quiz, isLoading: isQuizLoading, error } = useFetch(`/quizzes/${quizId}`);
   const { data: attemptStatus, isLoading: isStatusLoading } = useFetch(user ? `/quizzes/${quizId}/attempt-status` : null);
+
+  // ADDED: State to manage if the quiz has started
+  const [quizStarted, setQuizStarted] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [overallTimeLeft, setOverallTimeLeft] = useState(0);
 
-  // Redirect if already attempted
   useEffect(() => {
     if (attemptStatus && attemptStatus.attempted) {
       toast.info('You have already completed this quiz.');
@@ -35,12 +37,16 @@ const QuizPage = () => {
     }
   }, [attemptStatus, navigate]);
 
-  // Initialize overall timer
   useEffect(() => {
     if (quiz && quiz.timerType === 'overall') {
       setOverallTimeLeft(quiz.timer * 60);
     }
   }, [quiz]);
+
+  // ADDED: Handler to start the quiz
+  const handleStartQuiz = () => {
+    setQuizStarted(true);
+  };
 
   const handleNext = () => {
     if (currentQuestionIndex < quiz.questions.length - 1) {
@@ -82,7 +88,6 @@ const QuizPage = () => {
       </Helmet>
 
       <div className="max-w-4xl mx-auto relative my-8 px-4">
-        {/* Login overlay */}
         {!user && (
           <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
             <div className="text-center p-8">
@@ -92,7 +97,8 @@ const QuizPage = () => {
                 Create an account or log in to save your score and track your history.
               </p>
               <div className="flex justify-center gap-4">
-                <Link to={`/login?redirect=/quiz/details/${quizId}`}>
+                {/* UPDATED: Redirect link */}
+                <Link to={`/login?redirect=/quiz/${quizId}`}>
                   <Button>Login</Button>
                 </Link>
               </div>
@@ -101,63 +107,95 @@ const QuizPage = () => {
         )}
 
         <Card>
-          {/* Header with title and overall timer */}
-          <CardHeader className="flex flex-row items-center justify-between space-x-4">
-            <div className="flex-1">
-              <CardTitle>{quiz.title}</CardTitle>
-              <div className="w-full bg-secondary rounded-full h-2.5 mt-2">
-                <div className="bg-primary h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
-              </div>
-            </div>
-            {quiz.timerType === 'overall' && overallTimeLeft > 0 && (
-              <Timer seconds={overallTimeLeft} onTimeUp={handleSubmit} />
-            )}
-          </CardHeader>
-
-          {/* Question Content */}
-          <CardContent>
-            <div className="p-4 border rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">{currentQuestion.text}</h2>
-                {quiz.timerType === 'per_question' && (
-                  <Timer
-                    key={currentQuestionIndex}
-                    seconds={currentQuestion.timer}
-                    onTimeUp={handleNext}
-                  />
-                )}
-              </div>
-
-              {/* Options */}
-              <RadioGroup
-                value={userAnswers[currentQuestion._id]?.toString()}
-                onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}
-              >
-                {currentQuestion.options.map((option, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-2 mb-2 p-3 border rounded-md hover:bg-accent transition-colors"
-                  >
-                    <RadioGroupItem value={index.toString()} id={`${currentQuestion._id}-${index}`} />
-                    <Label htmlFor={`${currentQuestion._id}-${index}`} className="text-lg flex-1 cursor-pointer">
-                      {option}
-                    </Label>
+          {/* --- CONDITIONAL RENDERING START --- */}
+          {!quizStarted ? (
+            // --- 1. QUIZ DETAILS VIEW (Before Start) ---
+            <>
+              <CardHeader>
+                <CardTitle className="text-center text-3xl">{quiz.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center text-center p-8">
+                <p className="text-muted-foreground mb-6 max-w-prose">{quiz.description}</p>
+                <div className="flex flex-col sm:flex-row gap-6 mb-8">
+                  <div className="flex items-center gap-2">
+                    <HelpCircle className="h-5 w-5 text-primary" />
+                    <span className="font-medium">{quiz.questions.length} Questions</span>
                   </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="mt-6 flex justify-end">
-              {currentQuestionIndex === quiz.questions.length - 1 ? (
-                <Button onClick={handleSubmit} disabled={isSubmitting} variant="destructive">
-                  {isSubmitting ? 'Submitting...' : 'Finish & Submit Quiz'}
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <span className="font-medium">
+                      {quiz.timerType === 'overall'
+                        ? `${quiz.timer} Minutes (Overall)`
+                        : quiz.timerType === 'per_question'
+                        ? 'Timed per question'
+                        : 'No time limit'}
+                    </span>
+                  </div>
+                </div>
+                <Button size="lg" onClick={handleStartQuiz}>
+                  Start Quiz Now
                 </Button>
-              ) : (
-                <Button onClick={handleNext}>Next Question</Button>
-              )}
-            </div>
-          </CardContent>
+              </CardContent>
+            </>
+          ) : (
+            // --- 2. QUIZ IN-PROGRESS VIEW (After Start) ---
+            <>
+              <CardHeader className="flex flex-row items-center justify-between space-x-4">
+                <div className="flex-1">
+                  <CardTitle>{quiz.title}</CardTitle>
+                  <div className="w-full bg-secondary rounded-full h-2.5 mt-2">
+                    <div className="bg-primary h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
+                  </div>
+                </div>
+                {quiz.timerType === 'overall' && overallTimeLeft > 0 && (
+                  <Timer seconds={overallTimeLeft} onTimeUp={handleSubmit} />
+                )}
+              </CardHeader>
+
+              <CardContent>
+                <div className="p-4 border rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">{currentQuestion.text}</h2>
+                    {quiz.timerType === 'per_question' && (
+                      <Timer
+                        key={currentQuestionIndex}
+                        seconds={currentQuestion.timer}
+                        onTimeUp={handleNext}
+                      />
+                    )}
+                  </div>
+
+                  <RadioGroup
+                    value={userAnswers[currentQuestion._id]?.toString()}
+                    onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}
+                  >
+                    {currentQuestion.options.map((option, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center space-x-2 mb-2 p-3 border rounded-md hover:bg-accent transition-colors"
+                      >
+                        <RadioGroupItem value={index.toString()} id={`${currentQuestion._id}-${index}`} />
+                        <Label htmlFor={`${currentQuestion._id}-${index}`} className="text-lg flex-1 cursor-pointer">
+                          {option}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                  {currentQuestionIndex === quiz.questions.length - 1 ? (
+                    <Button onClick={handleSubmit} disabled={isSubmitting} variant="destructive">
+                      {isSubmitting ? 'Submitting...' : 'Finish & Submit Quiz'}
+                    </Button>
+                  ) : (
+                    <Button onClick={handleNext}>Next Question</Button>
+                  )}
+                </div>
+              </CardContent>
+            </>
+          )}
+          {/* --- CONDITIONAL RENDERING END --- */}
         </Card>
       </div>
     </>
@@ -165,4 +203,3 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
-
