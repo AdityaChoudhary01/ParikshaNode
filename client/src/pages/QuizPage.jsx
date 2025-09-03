@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/Label';
-// ADDED: Imported new icons
 import { Lock, HelpCircle, Clock } from 'lucide-react';
 
 const QuizPage = () => {
@@ -22,9 +21,7 @@ const QuizPage = () => {
   const { data: quiz, isLoading: isQuizLoading, error } = useFetch(`/quizzes/${quizId}`);
   const { data: attemptStatus, isLoading: isStatusLoading } = useFetch(user ? `/quizzes/${quizId}/attempt-status` : null);
 
-  // ADDED: State to manage if the quiz has started
   const [quizStarted, setQuizStarted] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -43,7 +40,6 @@ const QuizPage = () => {
     }
   }, [quiz]);
 
-  // ADDED: Handler to start the quiz
   const handleStartQuiz = () => {
     setQuizStarted(true);
   };
@@ -77,6 +73,14 @@ const QuizPage = () => {
   if (error) return <p className="text-center text-destructive mt-8">Error: {error}</p>;
   if (!quiz) return <p className="text-center mt-8">Quiz not found.</p>;
 
+  // --- THE FIX IS HERE ---
+  // If the status shows the quiz has been attempted, we know the useEffect above will
+  // trigger a redirect. By returning null here, we prevent the "Start Quiz" UI
+  // from flashing on the screen for a moment.
+  if (attemptStatus && attemptStatus.attempted) {
+    return null;
+  }
+
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
@@ -97,7 +101,6 @@ const QuizPage = () => {
                 Create an account or log in to save your score and track your history.
               </p>
               <div className="flex justify-center gap-4">
-                {/* UPDATED: Redirect link */}
                 <Link to={`/login?redirect=/quiz/${quizId}`}>
                   <Button>Login</Button>
                 </Link>
@@ -107,9 +110,7 @@ const QuizPage = () => {
         )}
 
         <Card>
-          {/* --- CONDITIONAL RENDERING START --- */}
           {!quizStarted ? (
-            // --- 1. QUIZ DETAILS VIEW (Before Start) ---
             <>
               <CardHeader>
                 <CardTitle className="text-center text-3xl">{quiz.title}</CardTitle>
@@ -138,7 +139,6 @@ const QuizPage = () => {
               </CardContent>
             </>
           ) : (
-            // --- 2. QUIZ IN-PROGRESS VIEW (After Start) ---
             <>
               <CardHeader className="flex flex-row items-center justify-between space-x-4">
                 <div className="flex-1">
@@ -195,7 +195,6 @@ const QuizPage = () => {
               </CardContent>
             </>
           )}
-          {/* --- CONDITIONAL RENDERING END --- */}
         </Card>
       </div>
     </>
