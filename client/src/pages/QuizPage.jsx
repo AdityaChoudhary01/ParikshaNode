@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -18,8 +18,9 @@ const QuizPage = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
+  // STEP 1: Fetch quiz data and the user's entire quiz history for a more reliable check.
   const { data: quiz, isLoading: isQuizLoading, error } = useFetch(`/quizzes/${quizId}`);
-  const { data: attemptStatus, isLoading: isStatusLoading } = useFetch(user ? `/quizzes/${quizId}/attempt-status` : null);
+  const { data: history, isLoading: isHistoryLoading } = useFetch(user ? '/results/my-history' : null);
 
   const [quizStarted, setQuizStarted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,12 +28,26 @@ const QuizPage = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [overallTimeLeft, setOverallTimeLeft] = useState(0);
 
+  // STEP 2: Check if the fetched history contains a result for the current quiz.
+  const previousAttempt = useMemo(() => {
+    if (!user || !history) return null;
+    // Find a result where the quiz ID matches the one from the URL.
+    return history.find(result => {
+      const attemptedQuizId = result.quiz?._id || result.quiz;
+      return attemptedQuizId === quizId;
+    });
+  }, [history, quizId, user]);
+
+
+  // STEP 3: Redirect the user if a previous attempt was found.
   useEffect(() => {
-    if (attemptStatus && attemptStatus.attempted) {
+    if (previousAttempt) {
       toast.info('You have already completed this quiz.');
-      navigate(`/results/${attemptStatus.resultId}`, { replace: true });
+      // Use the ID from the found result object for the redirect.
+      navigate(`/results/${previousAttempt._id}`, { replace: true });
     }
-  }, [attemptStatus, navigate]);
+  }, [previousAttempt, navigate]);
+
 
   useEffect(() => {
     if (quiz && quiz.timerType === 'overall') {
@@ -69,15 +84,13 @@ const QuizPage = () => {
     }
   };
 
-  if (isQuizLoading || (user && isStatusLoading)) return <Loader />;
+  // Update loading check to include history loading.
+  if (isQuizLoading || (user && isHistoryLoading)) return <Loader />;
   if (error) return <p className="text-center text-destructive mt-8">Error: {error}</p>;
   if (!quiz) return <p className="text-center mt-8">Quiz not found.</p>;
 
-  // --- THE FIX IS HERE ---
-  // If the status shows the quiz has been attempted, we know the useEffect above will
-  // trigger a redirect. By returning null here, we prevent the "Start Quiz" UI
-  // from flashing on the screen for a moment.
-  if (attemptStatus && attemptStatus.attempted) {
+  // If a previous attempt exists, render nothing while the redirect happens.
+  if (previousAttempt) {
     return null;
   }
 
@@ -92,6 +105,7 @@ const QuizPage = () => {
       </Helmet>
 
       <div className="max-w-4xl mx-auto relative my-8 px-4">
+        {/* Login Overlay */}
         {!user && (
           <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
             <div className="text-center p-8">
@@ -110,6 +124,7 @@ const QuizPage = () => {
         )}
 
         <Card>
+          {/* Quiz Details / Start Screen */}
           {!quizStarted ? (
             <>
               <CardHeader>
@@ -140,6 +155,7 @@ const QuizPage = () => {
             </>
           ) : (
             <>
+              {/* Quiz In-Progress View */}
               <CardHeader className="flex flex-row items-center justify-between space-x-4">
                 <div className="flex-1">
                   <CardTitle>{quiz.title}</CardTitle>
@@ -151,7 +167,6 @@ const QuizPage = () => {
                   <Timer seconds={overallTimeLeft} onTimeUp={handleSubmit} />
                 )}
               </CardHeader>
-
               <CardContent>
                 <div className="p-4 border rounded-lg">
                   <div className="flex justify-between items-center mb-4">
@@ -164,7 +179,6 @@ const QuizPage = () => {
                       />
                     )}
                   </div>
-
                   <RadioGroup
                     value={userAnswers[currentQuestion._id]?.toString()}
                     onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}
@@ -182,7 +196,6 @@ const QuizPage = () => {
                     ))}
                   </RadioGroup>
                 </div>
-
                 <div className="mt-6 flex justify-end">
                   {currentQuestionIndex === quiz.questions.length - 1 ? (
                     <Button onClick={handleSubmit} disabled={isSubmitting} variant="destructive">
@@ -202,5 +215,3 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
-
-
