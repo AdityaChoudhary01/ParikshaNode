@@ -1,4 +1,4 @@
-import React, from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -202,3 +202,4 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
+
