@@ -8,12 +8,10 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
 import Timer from '@/components/Timer';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/Label';
-import { Lock, Tag, Clock, HelpCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
+import { Lock } from 'lucide-react';
 
 const QuizPage = () => {
   const { id: quizId } = useParams();
@@ -24,7 +22,6 @@ const QuizPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
-  const [isQuizStarted, setIsQuizStarted] = useState(false); // New state to control quiz start
 
   const handleNext = () => {
     if (quiz && currentQuestionIndex < quiz.questions.length - 1) {
@@ -56,50 +53,8 @@ const QuizPage = () => {
   if (error) return <p className="text-center text-destructive">Error: {error}</p>;
   if (!quiz) return <p>Quiz not found.</p>;
 
-  const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
-
-  // Render Quiz Details page if quiz has not started
-  if (!isQuizStarted) {
-    return (
-      <>
-        <Helmet>
-          <title>{quiz ? `Details for "${quiz.title}"` : 'Loading Quiz...'} | ParikshaNode</title>
-          <meta name="description" content={quiz ? quiz.description : 'Test your knowledge with ParikshaNode.'} />
-        </Helmet>
-        <div className="max-w-4xl mx-auto">
-          {!user && (
-            <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
-              <div className="text-center p-8">
-                <Lock className="mx-auto h-12 w-12 text-primary mb-4" />
-                <h2 className="text-2xl font-bold mb-2">Login to Start the Quiz</h2>
-                <p className="text-muted-foreground mb-6">
-                  Create an account or log in to save your score, track your history, and compete on the leaderboard.
-                </p>
-                <div className="flex justify-center gap-4">
-                  <Link to={`/login?redirect=/quiz/${quizId}`}><Button>Login</Button></Link>
-                  <Link to={`/register?redirect=/quiz/${quizId}`}><Button variant="outline">Sign Up</Button></Link>
-                </div>
-              </div>
-            </div>
-          )}
-          <Card>
-            <CardHeader><CardTitle className="text-3xl">{quiz.title}</CardTitle><CardDescription className="text-lg">{quiz.description}</CardDescription></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center text-muted-foreground"><Tag className="w-5 h-5 mr-3 text-primary" /><span>Category: {quiz.category}</span></div>
-              <div className="flex items-center text-muted-foreground"><HelpCircle className="w-5 h-5 mr-3 text-primary" /><span>{quiz.questions.length} Questions</span></div>
-              <div className="flex items-center text-muted-foreground"><Clock className="w-5 h-5 mr-3 text-primary" /><span>Timer: {quiz.timerType === 'overall' ? `${quiz.timer} minutes` : 'Per-Question'}</span></div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" onClick={() => setIsQuizStarted(true)}>Start Quiz</Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </>
-    );
-  }
-
-  // Render the quiz content once it's started
   const currentQuestion = quiz.questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
   return (
     <>
@@ -109,6 +64,22 @@ const QuizPage = () => {
       </Helmet>
       
       <div className="max-w-4xl mx-auto relative">
+        {!user && (
+          <div className="absolute inset-0 bg-background/90 backdrop-blur-sm z-10 flex items-center justify-center rounded-lg">
+            <div className="text-center p-8">
+              <Lock className="mx-auto h-12 w-12 text-primary mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Login to Start the Quiz</h2>
+              <p className="text-muted-foreground mb-6">
+                Create an account or log in to save your score, track your history, and compete on the leaderboard.
+              </p>
+              <div className="flex justify-center gap-4">
+                <Link to={`/login?redirect=/quiz/${quizId}`}><Button>Login</Button></Link>
+                <Link to={`/register?redirect=/quiz/${quizId}`}><Button variant="outline">Sign Up</Button></Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-x-4">
             <div className="flex-1">
@@ -133,6 +104,7 @@ const QuizPage = () => {
                   />
                 )}
               </div>
+              {/* The fix is on the 'value' prop below */}
               <RadioGroup
                 value={userAnswers[currentQuestion._id]?.toString() || ''}
                 onValueChange={(value) => handleAnswerSelect(currentQuestion._id, parseInt(value))}
@@ -162,4 +134,3 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
-
