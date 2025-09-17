@@ -26,13 +26,19 @@ export const getQuizById = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Fetch a single quiz with answers (for admins)
+// @desc    Fetch a single quiz with answers (for admins/creators)
 // @route   GET /api/quizzes/:id/details
-// @access  Private/Admin
-export const getQuizDetailsForAdmin = asyncHandler(async (req, res) => {
+// @access  Private
+export const getQuizDetails = asyncHandler(async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     if (quiz) {
-        res.status(200).json(quiz);
+        // Allow if user is admin or the creator of the quiz
+        if (req.user.role === 'admin' || quiz.createdBy.toString() === req.user._id.toString()) {
+            res.status(200).json(quiz);
+        } else {
+            res.status(403);
+            throw new Error('Not authorized to view quiz details');
+        }
     } else {
         res.status(404);
         throw new Error('Quiz not found');
