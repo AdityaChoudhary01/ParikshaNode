@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,8 +23,13 @@ import ProfilePage from '@/pages/ProfilePage';
 import MyQuizzesPage from '@/pages/MyQuizzesPage';
 import QuizFormPage from '@/pages/QuizFormPage';
 import QuizDetailsPage from '@/pages/QuizDetailsPage';
-import SharedQuizHandler from '@/pages/SharedQuizHandler';
 import QuizReportPage from '@/pages/QuizReportPage';
+
+// Admin Pages
+import AdminLayout from '@/pages/admin/AdminLayout';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminQuizListPage from '@/pages/admin/AdminQuizListPage';
+import AdminUserListPage from '@/pages/admin/AdminUserListPage';
 
 function App() {
   return (
@@ -36,17 +40,12 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="contact" element={<ContactPage />} />
-          <Route path="donate" element={<DonatePage />} />
           <Route path="leaderboard/:quizId" element={<LeaderboardPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="donate" element={<DonatePage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="quiz/:id" element={<QuizDetailsPage />} />
           
-          {/* Shared Quiz Redirect Handler - Determines if user is logged in/has attempted */}
-          <Route path="quiz/:id" element={<SharedQuizHandler />} />
-          {/* Quiz Details Page - Public, shows quiz metadata */}
-          <Route path="quiz/details/:id" element={<QuizDetailsPage />} />
-          
-
           {/* Protected User Routes */}
           <Route element={<PrivateRoute />}>
             <Route path="profile" element={<ProfilePage />} />
