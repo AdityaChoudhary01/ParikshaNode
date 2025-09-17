@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,8 +23,7 @@ import ContactPage from '@/pages/ContactPage';
 import ProfilePage from '@/pages/ProfilePage';
 import MyQuizzesPage from '@/pages/MyQuizzesPage';
 import QuizFormPage from '@/pages/QuizFormPage';
-import QuizDetailsPage from '@/pages/QuizDetailsPage';
-import QuizReportPage from '@/pages/QuizReportPage';
+import QuizReportPage from '@/pages/QuizReportPage'; // Added for quiz report page
 
 // Admin Pages
 import AdminLayout from '@/pages/admin/AdminLayout';
@@ -44,7 +44,7 @@ function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="donate" element={<DonatePage />} />
           <Route path="contact" element={<ContactPage />} />
-          <Route path="quiz/:id" element={<QuizDetailsPage />} />
+          <Route path="quiz/:id" element={<QuizPage />} />
           
           {/* Protected User Routes */}
           <Route element={<PrivateRoute />}>
@@ -55,7 +55,6 @@ function App() {
             <Route path="results/:id" element={<ResultsPage />} />
             <Route path="history" element={<HistoryPage />} />
             <Route path="quiz/report/:quizId" element={<QuizReportPage />} />
-            <Route path="quiz/:id/start" element={<QuizPage />} />
           </Route>
 
           {/* Protected Admin Routes */}
