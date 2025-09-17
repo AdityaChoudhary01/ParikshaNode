@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
@@ -15,7 +15,8 @@ import { Helmet } from 'react-helmet-async';
 import { setCredentials } from '@/app/slices/authSlice';
 
 const ProfilePage = () => {
-  const { data: user, isLoading, error, refetch } = useFetch('/users/profile');
+  const { user } = useSelector((state) => state.auth); // Use useSelector to get the latest user state
+  const { data: userData, isLoading, error, refetch } = useFetch('/users/profile');
   const { data: history, isLoading: historyLoading } = useFetch('/results/my-history');
   
   const dispatch = useDispatch();
@@ -25,20 +26,20 @@ const ProfilePage = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      setUsername(user.username);
+    if (userData) {
+      setUsername(userData.username);
     }
-  }, [user]);
+  }, [userData]);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
     try {
       const response = await api.put('/users/profile', { username });
-      // Dispatch the action with the updated user data from the response
+      // The server returns the complete updated user object
       dispatch(setCredentials(response.data));
       toast.success('Profile updated successfully!');
-      refetch(); // Refetch user data
+      refetch();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Update failed');
     } finally {
@@ -55,9 +56,9 @@ const ProfilePage = () => {
       const response = await api.put('/users/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      // The server returns the updated user object with the new avatar URL
-      // We can use this to update the Redux store and local storage.
-      dispatch(setCredentials({ ...user, avatar: response.data }));
+      // The server returns only the new avatar object, so we merge it with the existing user object
+      const updatedUser = { ...user, avatar: response.data };
+      dispatch(setCredentials(updatedUser)); // Update the global state
       toast.success('Profile picture updated!');
       refetch();
       setAvatarFile(null); // Clear file input
@@ -83,7 +84,7 @@ const ProfilePage = () => {
       <div className="grid md:grid-cols-3 gap-8">
         {/* Left Column: Avatar */}
         <div className="md:col-span-1 flex flex-col items-center space-y-4">
-          <Avatar src={user?.avatar?.url} alt={user?.username} size="xl" />
+          <Avatar src={userData?.avatar?.url} alt={userData?.username} size="xl" />
           <Input type="file" onChange={(e) => setAvatarFile(e.target.files[0])} />
           <Button onClick={handleAvatarUpload} disabled={isUpdating || !avatarFile} className="w-full">
             {isUpdating ? 'Uploading...' : 'Upload Picture'}
@@ -98,7 +99,7 @@ const ProfilePage = () => {
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" value={user?.email || ''} disabled />
+                  <Input id="email" value={userData?.email || ''} disabled />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
