@@ -1,5 +1,6 @@
 import express from 'express';
 const router = express.Router();
+
 import {
   getQuizzes,
   getQuizById,
@@ -7,12 +8,15 @@ import {
   updateQuiz,
   deleteQuiz,
   submitQuiz,
-  getQuizDetailsForAdmin,
+  getQuizDetails,
   getMyQuizzes,
-  generateQuizWithAI
+  generateQuizWithAI,
+  getQuizAttemptStatus // This route was added in a previous update
 } from '../controllers/quizController.js';
+
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
+// Get all quizzes (public) & create a quiz (private)
 router.route('/')
   .get(getQuizzes)
   .post(protect, createQuiz);
@@ -26,8 +30,11 @@ router.route('/generate-ai').post(protect, isAdmin, generateQuizWithAI);
 // Submit answers to a quiz (private)
 router.route('/:id/submit').post(protect, submitQuiz);
 
-// Get full quiz details with answers (admin-only)
-router.route('/:id/details').get(protect, isAdmin, getQuizDetailsForAdmin);
+// Check if a user has already attempted a quiz (private) - Re-added for functionality
+router.route('/:id/attempt-status').get(protect, getQuizAttemptStatus);
+
+// Get full quiz details with answers (private, for admin or creator)
+router.route('/:id/details').get(protect, getQuizDetails);
 
 // Get a single quiz (public), update (private), delete (private)
 router
