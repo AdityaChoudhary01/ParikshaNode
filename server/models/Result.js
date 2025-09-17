@@ -30,6 +30,12 @@ const resultSchema = new mongoose.Schema({
     correctAnswerIndex: { type: Number },
     isCorrect: { type: Boolean }
   }],
+  // Added for monitoring features
+  monitoringData: [{
+    timestamp: { type: Date, required: true },
+    eventType: { type: String, required: true },
+    data: { type: mongoose.Schema.Types.Mixed },
+  }],
 }, { 
   timestamps: true 
 });
