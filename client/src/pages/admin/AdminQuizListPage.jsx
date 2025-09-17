@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/Dialog";
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { PlusCircle, Edit, Trash2, Share2, Copy } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Share2, Copy, BarChart2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 
@@ -80,6 +80,7 @@ const AdminQuizListPage = () => {
                           </div>
                         </DialogContent>
                       </Dialog>
+                      <Link to={`/quiz/report/${quiz._id}`}><Button variant="outline" size="icon"><BarChart2 className="w-4 h-4" /></Button></Link>
                       <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
                       <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
                     </TableCell>
