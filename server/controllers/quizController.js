@@ -124,14 +124,24 @@ export const deleteQuiz = asyncHandler(async (req, res) => {
 // @route   POST /api/quizzes/:id/submit
 // @access  Private
 export const submitQuiz = asyncHandler(async (req, res) => {
-    const { userAnswers } = req.body;
+    const { userAnswers, monitoringData } = req.body;
     const quiz = await Quiz.findById(req.params.id);
+    
     if (!quiz) {
         res.status(404);
         throw new Error('Quiz not found');
     }
+
+    // Prevent user from attempting the quiz again
+    const existingResult = await Result.findOne({ user: req.user._id, quiz: quiz._id });
+    if (existingResult) {
+        res.status(400);
+        throw new Error('You have already attempted this quiz');
+    }
+
     let score = 0;
     const detailedAnswers = [];
+    
     quiz.questions.forEach((question) => {
         const userAnswerIndex = userAnswers[question._id.toString()];
         const isCorrect = userAnswerIndex === question.correctAnswerIndex;
@@ -146,8 +156,10 @@ export const submitQuiz = asyncHandler(async (req, res) => {
             isCorrect: isCorrect,
         });
     });
+    
     const totalQuestions = quiz.questions.length;
     const percentage = (score / totalQuestions) * 100;
+
     const result = new Result({
         user: req.user._id,
         quiz: quiz._id,
@@ -155,7 +167,34 @@ export const submitQuiz = asyncHandler(async (req, res) => {
         totalQuestions,
         percentage,
         answers: detailedAnswers,
+        monitoringData,
     });
+    
     const savedResult = await result.save();
     res.status(201).json({ resultId: savedResult._id });
+});
+
+// @desc    Check if a user has already attempted a quiz
+// @route   GET /api/quizzes/:id/attempt-status
+// @access  Private
+export const getQuizAttemptStatus = asyncHandler(async (req, res) => {
+    const quiz = await Quiz.findById(req.params.id);
+
+    if (!quiz) {
+        res.status(404);
+        throw new Error('Quiz not found');
+    }
+
+    const existingResult = await Result.findOne({ user: req.user._id, quiz: quiz._id });
+
+    if (existingResult) {
+        res.status(200).json({
+            attempted: true,
+            resultId: existingResult._id,
+        });
+    } else {
+        res.status(200).json({
+            attempted: false,
+        });
+    }
 });
