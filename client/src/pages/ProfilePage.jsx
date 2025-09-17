@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader';
@@ -11,10 +12,13 @@ import Avatar from '@/components/ui/Avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { setCredentials } from '@/app/slices/authSlice';
 
 const ProfilePage = () => {
   const { data: user, isLoading, error, refetch } = useFetch('/users/profile');
   const { data: history, isLoading: historyLoading } = useFetch('/results/my-history');
+  
+  const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
   const [avatarFile, setAvatarFile] = useState(null);
@@ -30,7 +34,9 @@ const ProfilePage = () => {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      await api.put('/users/profile', { username });
+      const response = await api.put('/users/profile', { username });
+      // Dispatch the action with the updated user data from the response
+      dispatch(setCredentials(response.data));
       toast.success('Profile updated successfully!');
       refetch(); // Refetch user data
     } catch (err) {
@@ -46,9 +52,12 @@ const ProfilePage = () => {
     formData.append('avatar', avatarFile);
     setIsUpdating(true);
     try {
-      await api.put('/users/profile/avatar', formData, {
+      const response = await api.put('/users/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      // The server returns the updated user object with the new avatar URL
+      // We can use this to update the Redux store and local storage.
+      dispatch(setCredentials({ ...user, avatar: response.data }));
       toast.success('Profile picture updated!');
       refetch();
       setAvatarFile(null); // Clear file input
