@@ -105,7 +105,7 @@ const HomePage = () => {
           <div className="mt-8">
             {quizzes && quizzes.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {quizzes.slice(0, 6).map((quiz) => {
+                {quizzes.slice(0, 12).map((quiz) => {
                   const hasAttempted = user && attemptedQuizzesMap[quiz._id];
                   const resultId = hasAttempted ? attemptedQuizzesMap[quiz._id] : null;
 
@@ -160,3 +160,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
