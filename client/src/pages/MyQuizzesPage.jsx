@@ -71,23 +71,54 @@ const MyQuizzesPage = () => {
                       <TableCell>{quiz.category}</TableCell>
                       <TableCell>{quiz.questions.length}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" size="icon"><Share2 className="w-4 h-4" /></Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader><DialogTitle>Share Quiz</DialogTitle><DialogDescription>Share this link with anyone to take your quiz.</DialogDescription></DialogHeader>
-                            <div className="space-y-2">
-                              <Label>Quiz Link</Label>
-                              <div className="flex gap-2">
-                                <Input readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
-                                <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)}><Copy className="w-4 h-4"/></Button>
-                              </div>
-                              <Label>Quiz ID</Label>
-                              <Input readOnly value={quiz._id} />
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="icon"><Share2 className="w-4 h-4" /></Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Share Quiz</DialogTitle>
+                              <DialogDescription>Share these links with anyone to take your quiz or download the app.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              {/* Quiz Web Link */}
+                              <div className="space-y-2">
+                                <Label htmlFor="quizLink">Quiz Link (Web & App)</Label>
+                                <div className="flex gap-2">
+                                  <Input id="quizLink" readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
+                                  <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)}><Copy className="w-4 h-4"/></Button>
+                                </div>
+                              </div>
+
+                              {/* App Download Link */}
+                              <div className="space-y-2">
+                                <Label htmlFor="appDownload">App Download Link (Android APK)</Label>
+                                {/** You can define this URL at the top of the component or pass it as a prop if it's dynamic. */}
+                                {/** For now, let's hardcode it based on the mobile version's code. */}
+                                <div className="flex gap-2">
+                                  <Input 
+                                    id="appDownload" 
+                                    readOnly 
+                                    value="https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk" 
+                                  />
+                                  <Button 
+                                    size="icon" 
+                                    onClick={() => copyToClipboard('https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk')}
+                                  >
+                                    <Copy className="w-4 h-4"/>
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Quiz ID (Optional, as per original code) */}
+                              <div className="space-y-2">
+                                <Label htmlFor="quizId">Quiz ID</Label>
+                                <Input id="quizId" readOnly value={quiz._id} />
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+// ... rest of the component
                         <Link to={`/quiz/report/${quiz._id}`}><Button variant="outline" size="icon"><BarChart2 className="w-4 h-4" /></Button></Link>
                         <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
                         <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
