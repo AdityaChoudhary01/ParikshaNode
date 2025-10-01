@@ -118,7 +118,6 @@ const MyQuizzesPage = () => {
                             </div>
                           </DialogContent>
                         </Dialog>
-// ... rest of the component
                         <Link to={`/quiz/report/${quiz._id}`}><Button variant="outline" size="icon"><BarChart2 className="w-4 h-4" /></Button></Link>
                         <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
                         <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
