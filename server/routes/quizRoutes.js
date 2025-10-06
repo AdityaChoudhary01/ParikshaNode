@@ -11,7 +11,7 @@ import {
   getQuizDetails,
   getMyQuizzes,
   generateQuizWithAI,
-  getQuizAttemptStatus // This route was added in a previous update
+  getQuizAttemptStatus
 } from '../controllers/quizController.js';
 
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
@@ -24,8 +24,8 @@ router.route('/')
 // Get quizzes created by the logged-in user (private)
 router.route('/myquizzes').get(protect, getMyQuizzes);
 
-// Generate a quiz using AI (admin-only)
-router.route('/generate-ai').post(protect, isAdmin, generateQuizWithAI);
+// FIX: Removed 'isAdmin' so any protected user can access the AI generation.
+router.route('/generate-ai').post(protect, generateQuizWithAI);
 
 // Submit answers to a quiz (private)
 router.route('/:id/submit').post(protect, submitQuiz);
