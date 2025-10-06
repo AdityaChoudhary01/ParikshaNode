@@ -23,14 +23,20 @@ const resultSchema = new mongoose.Schema({
     type: Number, 
     required: true 
   },
+  // --- Feature 1: Quiz Analytics (Time Taken) ---
+  timeTakenInSeconds: { 
+    type: Number, 
+    default: 0 
+  },
+  // ---------------------------------------------
   answers: [{
     questionId: { type: mongoose.Schema.Types.ObjectId },
     questionText: { type: String },
-    userAnswerIndex: { type: Number },
-    correctAnswerIndex: { type: Number },
+    // Feature 4: Mixed data for user/correct answer (index or string)
+    userAnswer: { type: mongoose.Schema.Types.Mixed }, 
+    correctAnswer: { type: mongoose.Schema.Types.Mixed },
     isCorrect: { type: Boolean }
   }],
-  // Added for monitoring features
   monitoringData: [{
     timestamp: { type: Date, required: true },
     eventType: { type: String, required: true },
