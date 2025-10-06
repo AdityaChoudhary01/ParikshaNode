@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Award, Medal, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import { Helmet } from 'react-helmet-async';
+import { cn } from '@/lib/utils'; // Import cn for conditional classes
 
 const LeaderboardPage = () => {
   const { quizId } = useParams();
@@ -16,11 +17,20 @@ const LeaderboardPage = () => {
   if (isLeaderboardLoading || isQuizLoading) return <Loader />;
   if (!leaderboard || !quiz) return <p className="text-center text-destructive">Could not load leaderboard data.</p>;
   
+  // Enhanced Rank Icon Styling
   const getRankIcon = (rank) => {
-    if (rank === 0) return <Trophy className="text-yellow-500" />;
-    if (rank === 1) return <Medal className="text-gray-400" />;
-    if (rank === 2) return <Award className="text-yellow-700" />;
-    return <span className="font-bold">{rank + 1}</span>;
+    if (rank === 0) return <Trophy className="w-8 h-8 text-yellow-400 drop-shadow-xl" fill="gold" />;
+    if (rank === 1) return <Medal className="w-7 h-7 text-gray-400 drop-shadow-lg" fill="silver" />;
+    if (rank === 2) return <Award className="w-7 h-7 text-yellow-700 drop-shadow-md" fill="bronze" />;
+    return <span className="font-bold text-lg text-muted-foreground">{rank + 1}</span>;
+  };
+
+  // Helper to determine row styling
+  const getRowClass = (rank) => {
+    if (rank === 0) return 'bg-yellow-500/10 border-primary/50 font-bold hover:bg-yellow-500/20 shadow-lg';
+    if (rank === 1) return 'bg-gray-400/10 border-secondary/50 font-medium hover:bg-gray-400/20';
+    if (rank === 2) return 'bg-yellow-700/10 border-secondary/50 font-medium hover:bg-yellow-700/20';
+    return 'hover:bg-accent/50';
   };
 
   // Filter out any entries where the user has been deleted (user is null)
@@ -32,44 +42,61 @@ const LeaderboardPage = () => {
         <title>{quiz ? `Leaderboard for "${quiz.title}"` : 'Leaderboard'} | ParikshaNode</title>
         <meta name="description" content={quiz ? `See the top scores and rankings for the ${quiz.title} quiz on ParikshaNode.` : 'Compete for the top spot.'} />
       </Helmet>
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl">Leaderboard</CardTitle>
-        <CardDescription className="text-lg">Top scores for: {quiz.title}</CardDescription>
+    <Card className="max-w-3xl mx-auto shadow-2xl shadow-primary/30 animate-in fade-in zoom-in-75 duration-700">
+      <CardHeader className="text-center pt-8">
+        <CardTitle className="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text 
+                              bg-gradient-to-r from-primary to-destructive drop-shadow-md">
+            Global Leaderboard
+        </CardTitle>
+        <CardDescription className="text-xl font-medium mt-2">Quiz: {quiz.title}</CardDescription>
       </CardHeader>
       <CardContent>
         {validLeaderboard.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px] text-center">Rank</TableHead>
-                <TableHead>User</TableHead>
-                <TableHead className="text-right">Score</TableHead>
-                <TableHead className="text-right">Percentage</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {validLeaderboard.map((entry, index) => (
-                <TableRow key={entry._id}>
-                  <TableCell className="font-medium text-center flex justify-center items-center h-full pt-6">
-                    {getRankIcon(index)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar src={entry.user.avatar?.url} alt={entry.user.username} size="sm" />
-                      <span className="font-medium">{entry.user.username}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right font-semibold">{`${entry.score} / ${entry.totalQuestions}`}</TableCell>
-                  <TableCell className="text-right">{`${entry.percentage.toFixed(1)}%`}</TableCell>
+          <div className="overflow-x-auto border rounded-xl shadow-inner">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-secondary/70">
+                  <TableHead className="w-[100px] text-center text-lg">Rank</TableHead>
+                  <TableHead className="text-lg">Player</TableHead>
+                  <TableHead className="text-right text-lg">Score</TableHead>
+                  <TableHead className="text-right text-lg">Percentage</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {validLeaderboard.map((entry, index) => (
+                  <TableRow 
+                    key={entry._id} 
+                    className={cn("transition-all duration-300", getRowClass(index))}
+                  >
+                    {/* Rank Cell */}
+                    <TableCell className="font-medium text-center flex justify-center items-center h-full pt-6">
+                      {getRankIcon(index)}
+                    </TableCell>
+                    {/* Player Cell */}
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar src={entry.user.avatar?.url} alt={entry.user.username} size="md" />
+                        <span className="text-lg font-semibold text-foreground/90">{entry.user.username}</span>
+                      </div>
+                    </TableCell>
+                    {/* Score Cell */}
+                    <TableCell className="text-right text-lg font-extrabold text-primary">
+                        {`${entry.score} / ${entry.totalQuestions}`}
+                    </TableCell>
+                    {/* Percentage Cell */}
+                    <TableCell className="text-right text-lg font-bold">
+                        {`${entry.percentage.toFixed(1)}%`}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         ) : (
-          <p className="text-center text-muted-foreground py-10">
-            No one has taken this quiz yet. Be the first!
-          </p>
+          <div className="text-center py-12 space-y-4 border-2 border-dashed border-primary/30 rounded-xl bg-card/50">
+            <p className="text-xl text-muted-foreground font-medium">No one has taken this quiz yet.</p>
+            <p className="text-xl font-bold text-primary">Be the first to set the record!</p>
+          </div>
         )}
       </CardContent>
     </Card>
