@@ -13,6 +13,7 @@ import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import QuizPage from '@/pages/QuizPage';
+import LiveQuizPage from '@/pages/LiveQuizPage'; // FEATURE 3: NEW IMPORT
 import ResultsPage from '@/pages/ResultsPage';
 import HistoryPage from '@/pages/HistoryPage';
 import LeaderboardPage from '@/pages/LeaderboardPage';
@@ -23,7 +24,7 @@ import ContactPage from '@/pages/ContactPage';
 import ProfilePage from '@/pages/ProfilePage';
 import MyQuizzesPage from '@/pages/MyQuizzesPage';
 import QuizFormPage from '@/pages/QuizFormPage';
-import QuizReportPage from '@/pages/QuizReportPage'; // Added for quiz report page
+import QuizReportPage from '@/pages/QuizReportPage';
 
 // Admin Pages
 import AdminLayout from '@/pages/admin/AdminLayout';
@@ -45,6 +46,7 @@ function App() {
           <Route path="donate" element={<DonatePage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="quiz/:id" element={<QuizPage />} />
+          <Route path="live-quiz/:quizId" element={<LiveQuizPage />} /> {/* FEATURE 3: NEW ROUTE */}
           
           {/* Protected User Routes */}
           <Route element={<PrivateRoute />}>
