@@ -1,60 +1,70 @@
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Github, Linkedin, Twitter, Heart } from 'lucide-react'; // Added Heart icon for visual flair
 import logo from '@/assets/logo.png';
+import { cn } from '@/lib/utils'; // Import cn for enhanced styling
 
 const Layout = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+      
+      {/* Main Content Area */}
       <main className="flex-grow container mx-auto px-4 py-8">
         <Outlet />
       </main>
 
-      <footer className="bg-secondary text-secondary-foreground border-t">
-        <div className="container mx-auto py-8 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Footer - Ultra Modern Design */}
+      <footer className="bg-card text-foreground border-t border-primary/20 shadow-2xl shadow-primary/10">
+        <div className="container mx-auto py-10 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             
-           
-            <div className="space-y-4">
-          
-              <img src={logo} alt="ParikshaNode Logo" className="h-14" />
-              <p className="text-muted-foreground">
+            {/* Column 1: Logo & Mission */}
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+              <img src={logo} alt="ParikshaNode Logo" className="h-16 drop-shadow-lg" />
+              <p className="text-muted-foreground text-md max-w-xs">
                 Our mission is to make learning engaging and accessible for everyone through a modern, interactive quiz platform.
               </p>
+              <Link to="/donate" className="flex items-center text-primary hover:text-primary/80 transition-colors font-medium text-sm pt-2">
+                <Heart className="w-4 h-4 mr-1 fill-primary/50" /> Support the Project
+              </Link>
             </div>
 
-            
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Navigate</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
-                <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-                <li><Link to="/donate" className="hover:text-primary transition-colors">Donate</Link></li>
+            {/* Column 2: Navigation */}
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
+              <h3 className="font-extrabold text-xl text-primary">Navigate</h3>
+              <ul className="space-y-3 text-muted-foreground">
+                <li><Link to="/" className="text-lg hover:text-primary transition-colors hover:font-semibold">Home</Link></li>
+                <li><Link to="/about" className="text-lg hover:text-primary transition-colors hover:font-semibold">About Us</Link></li>
+                <li><Link to="/contact" className="text-lg hover:text-primary transition-colors hover:font-semibold">Contact</Link></li>
+                <li><Link to="/donate" className="text-lg hover:text-primary transition-colors hover:font-semibold">Donate</Link></li>
               </ul>
             </div>
 
-            
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Connect</h3>
-              <div className="flex space-x-4">
-                <a href="https://x.com/X" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Twitter className="w-6 h-6" />
+            {/* Column 3: Connect */}
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+              <h3 className="font-extrabold text-xl text-primary">Connect</h3>
+              <div className="flex space-x-5">
+                {/* Social Icon Styling with Hover Effect */}
+                <a href="https://x.com/X" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110">
+                  <Twitter className="w-7 h-7" />
                 </a>
-                <a href="https://github.com/AdityaChoudhary01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Github className="w-6 h-6" />
+                <a href="https://github.com/AdityaChoudhary01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110">
+                  <Github className="w-7 h-7" />
                 </a>
-                <a href="https://www.linkedin.com/in/aditya-kumar-38093a304/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                  <Linkedin className="w-6 h-6" />
+                <a href="https://www.linkedin.com/in/aditya-kumar-38093a304/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110">
+                  <Linkedin className="w-7 h-7" />
                 </a>
               </div>
+              <p className="text-sm text-muted-foreground">Follow us for updates and new quizzes.</p>
             </div>
 
           </div>
 
-          <div className="mt-8 pt-6 border-t border-border/50 text-center text-muted-foreground text-sm">
-            <p>&copy; {new Date().getFullYear()} ParikshaNode App. A Final Year Project by GNIOT Students. All rights reserved.</p>
+          <div className="mt-12 pt-6 border-t border-border/70 text-center text-muted-foreground text-sm">
+            <p>&copy; {currentYear} ParikshaNode App. A Final Year Project by GNIOT Students. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -63,4 +73,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
