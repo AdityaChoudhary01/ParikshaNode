@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { useFetch } from '@/hooks/useFetch';
@@ -6,12 +6,27 @@ import Loader from '@/components/Loader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Shield, UserCheck } from 'lucide-react'; // Added Shield and UserCheck icons
+import { Trash2, Shield, UserCheck, ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils'; // Import cn utility
 
+// PAGINATION CONFIG
+const PAGE_LIMIT = 10;
+
 const AdminUserListPage = () => {
-  const { data: users, isLoading, error, refetch } = useFetch('/users');
+  const [currentPage, setCurrentPage] = useState(1); // New State
   const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const userFetchUrl = useMemo(() => {
+    return `/users?page=${currentPage}&limit=${PAGE_LIMIT}`;
+  }, [currentPage]);
+
+  // Use fetchResult to get data and metadata
+  const { data: fetchResult, isLoading, error, refetch } = useFetch(userFetchUrl, [userFetchUrl]);
+  
+  const users = fetchResult?.users || [];
+  const totalPages = fetchResult?.pages || 1;
+  const totalUsers = fetchResult?.totalUsers || 0;
+
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user? This cannot be undone.')) {
@@ -19,7 +34,12 @@ const AdminUserListPage = () => {
       try {
         await api.delete(`/users/${id}`);
         toast.success('User deleted successfully');
-        refetch(); // Refetch the user list
+        // If deleting the last item on a page, move to the previous page
+        if (users.length === 1 && currentPage > 1) {
+             setCurrentPage(prev => prev - 1);
+        } else {
+             refetch(); // Refetch the user list
+        }
       } catch (err) {
         toast.error(err.response?.data?.message || 'Failed to delete user');
       } finally {
@@ -36,7 +56,7 @@ const AdminUserListPage = () => {
       <CardHeader className="py-6 border-b border-border/50">
         <CardTitle className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text 
                               bg-gradient-to-r from-primary to-destructive drop-shadow-md flex items-center gap-3">
-            <UserCheck className="w-8 h-8"/> Manage Users
+            <UserCheck className="w-8 h-8"/> Manage Users ({totalUsers})
         </CardTitle>
         <CardDescription className="text-lg mt-1">View and manage all registered users.</CardDescription>
       </CardHeader>
@@ -92,7 +112,7 @@ const AdminUserListPage = () => {
                   <TableRow>
                     <TableCell colSpan="5" className="h-24 text-center">
                         <div className="py-8 space-y-2 border-2 border-dashed border-primary/30 rounded-xl bg-card/50">
-                            <p className="text-xl text-muted-foreground font-medium">No users found.</p>
+                            <p className="text-xl text-muted-foreground font-medium">No users found on this page.</p>
                         </div>
                     </TableCell>
                   </TableRow>
@@ -100,6 +120,31 @@ const AdminUserListPage = () => {
               </TableBody>
             </Table>
         </div>
+        
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-6">
+                <Button 
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    variant="outline"
+                    size="icon"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </Button>
+                <span className="text-lg font-semibold text-foreground/90">
+                    Page {currentPage} of {totalPages}
+                </span>
+                <Button 
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    variant="outline"
+                    size="icon"
+                >
+                    <ArrowRight className="w-5 h-5" />
+                </Button>
+            </div>
+        )}
       </CardContent>
     </Card>
   );
