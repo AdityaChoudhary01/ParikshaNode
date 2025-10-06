@@ -35,12 +35,15 @@ const checkAnswer = (question, userAnswer) => {
 };
 // ------------------------------------------------------------------------
 
-// @desc    Fetch all quizzes (Feature 5: Enhanced Quiz Discovery)
+// @desc    Fetch all quizzes (FEATURE: Pagination)
 // @route   GET /api/quizzes
 // @access  Public
 export const getQuizzes = asyncHandler(async (req, res) => {
-    const { keyword, category } = req.query;
+    const { keyword, category, page = 1, limit = 12 } = req.query; // Default to page 1, limit 12
     const query = {};
+    const pageSize = parseInt(limit);
+    const currentPage = parseInt(page);
+    const skip = pageSize * (currentPage - 1);
 
     if (keyword) {
         const regex = new RegExp(keyword, 'i');
@@ -56,11 +59,23 @@ export const getQuizzes = asyncHandler(async (req, res) => {
         query.category = category;
     }
 
+    // Get total count for pagination metadata
+    const count = await Quiz.countDocuments(query);
+    const totalPages = Math.ceil(count / pageSize);
+
     const quizzes = await Quiz.find(query)
         .populate('createdBy', 'username')
-        .select('-questions.correctAnswerIndex');
-    
-    res.status(200).json(quizzes);
+        .select('-questions.correctAnswerIndex')
+        .limit(pageSize)
+        .skip(skip)
+        .sort({ createdAt: -1 }); // Sort newest first
+
+    res.status(200).json({
+        quizzes,
+        page: currentPage,
+        pages: totalPages,
+        totalQuizzes: count,
+    });
 });
 
 // @desc    Create a new quiz (Feature 2, 5)
@@ -233,28 +248,44 @@ export const getQuizDetails = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Get quizzes created by the logged-in user
+// @desc    Get quizzes created by the logged-in user (FEATURE: Pagination)
 // @route   GET /api/quizzes/myquizzes
 // @access  Private
 export const getMyQuizzes = asyncHandler(async (req, res) => {
-    const quizzes = await Quiz.find({ createdBy: req.user._id });
-    res.status(200).json(quizzes);
+    const { page = 1, limit = 10 } = req.query; // Default limit for personal lists
+    const pageSize = parseInt(limit);
+    const currentPage = parseInt(page);
+    const skip = pageSize * (currentPage - 1);
+    const query = { createdBy: req.user._id };
+
+    const count = await Quiz.countDocuments(query);
+    const totalPages = Math.ceil(count / pageSize);
+
+    const quizzes = await Quiz.find(query)
+        .select('-questions.correctAnswerIndex')
+        .limit(pageSize)
+        .skip(skip)
+        .sort({ createdAt: -1 });
+
+    res.status(200).json({
+        quizzes,
+        page: currentPage,
+        pages: totalPages,
+        totalQuizzes: count,
+    });
 });
 
 // @desc    Generate a quiz using AI
 // @route   POST /api/quizzes/generate-ai
 // @access  Private
 export const generateQuizWithAI = asyncHandler(async (req, res) => {
-  // FIX: Added quizType to destructuring
   const { topic, numQuestions, difficulty, quizType } = req.body;
   
-  // FIX: Added quizType to validation
   if (!topic || !numQuestions || !difficulty || !quizType) {
     res.status(400);
     throw new Error('Please provide a topic, number of questions, difficulty, and quiz type.');
   }
 
-  // FIX: Passed quizType to generateQuiz
   const quizData = await generateQuiz(topic, numQuestions, difficulty, quizType);
   res.status(200).json(quizData);
 });
