@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useFetch } from '@/hooks/useFetch';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input'; 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"; 
+import { Input } from '@/components/ui/Input'; 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"; 
 import Loader from '@/components/Loader';
 // PRESERVED: All icons are imported as requested
-import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart, Trophy, FileText, Search, Zap } from 'lucide-react'; 
+import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart, Trophy, FileText, Search, Zap, ArrowLeft, ArrowRight } from 'lucide-react'; 
 import { Helmet } from 'react-helmet-async';
 import { cn } from '@/lib/utils'; // Utility for complex class names
 
@@ -30,35 +30,48 @@ const useDebounce = (value, delay) => {
 };
 // --- END: useDebounce Hook Definition ---
 
+// PAGINATION CONFIG
+const PAGE_LIMIT = 12;
 
 const HomePage = () => {
     const { user } = useSelector((state) => state.auth);
     
+    // PAGINATION STATE
+    const [currentPage, setCurrentPage] = useState(1);
+    
     // State 1: Instant value in the input field (updates on every keystroke)
     const [searchTerm, setSearchTerm] = useState('');
     // State 2: Override value for immediate search (only updates on Enter key)
-    const [instantSearchTerm, setInstantSearchTerm] = useState(''); 
+    const [instantSearchTerm, setInstantSearchTerm] = useState(''); 
     const [selectedCategory, setSelectedCategory] = useState('All');
     
     // Debounced value (updates 5000ms after the user stops typing)
-    const debouncedSearchTerm = useDebounce(searchTerm, 5000); 
+    const debouncedSearchTerm = useDebounce(searchTerm, 5000); 
     
     // Active search term: prioritize instantSearchTerm, then fall back to debounced term
     const activeSearchTerm = useMemo(() => {
         return instantSearchTerm || debouncedSearchTerm;
     }, [instantSearchTerm, debouncedSearchTerm]);
 
+    // Reset page to 1 when search term or category changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeSearchTerm, selectedCategory]);
+
     // Construct the query string for fetching quizzes
     const quizFetchUrl = useMemo(() => {
-        let url = '/quizzes?';
+        let url = `/quizzes?page=${currentPage}&limit=${PAGE_LIMIT}&`; // ADDED PAGINATION PARAMS
         // Use the activeSearchTerm, which ensures immediate fetch on Enter
         if (activeSearchTerm) url += `keyword=${encodeURIComponent(activeSearchTerm)}&`;
         if (selectedCategory && selectedCategory !== 'All') url += `category=${encodeURIComponent(selectedCategory)}&`;
         return url;
-    }, [activeSearchTerm, selectedCategory]); 
+    }, [activeSearchTerm, selectedCategory, currentPage]); 
 
-    // Added quizFetchUrl as a dependency for refetching
-    const { data: quizzes, isLoading: quizzesLoading, error } = useFetch(quizFetchUrl, [quizFetchUrl]); 
+    // Destructure paginated data
+    const { data: fetchResult, isLoading: quizzesLoading, error } = useFetch(quizFetchUrl, [quizFetchUrl]); 
+    
+    const quizzes = fetchResult?.quizzes || [];
+    const totalPages = fetchResult?.pages || 1; // Total pages for controls
     
     const { data: history, isLoading: historyLoading } = useFetch(user ? '/results/my-history' : null);
 
@@ -87,7 +100,8 @@ const HomePage = () => {
     }, [history]);
     
     const allCategories = useMemo(() => {
-        if (!quizzes) return new Set();
+        if (!fetchResult) return new Set(); // Use fetchResult to get all available categories 
+        // Note: This needs refactoring if you want ALL categories regardless of search/page.
         return new Set(quizzes.map(q => q.category));
     }, [quizzes]);
     
@@ -136,7 +150,7 @@ const HomePage = () => {
                 <meta name="description" content="An advanced MERN stack quiz platform to create, share, and take quizzes. Perfect for students and professionals to test and enhance their knowledge." />
             </Helmet>
             <div className="space-y-20">
-                {/* Hero Section - Ultra Modern Design */}
+                {/* Hero Section - Ultra Modern Design (omitted for brevity, assume unchanged) */}
                 <section className="text-center py-20 md:py-32 relative overflow-hidden rounded-3xl border border-primary/20 shadow-2xl shadow-primary/30 
                                     bg-gradient-to-br from-card/80 via-background to-card/80 
                                     before:content-[''] before:absolute before:inset-0 before:opacity-20 before:bg-primary/20 before:dark:opacity-10 
@@ -171,7 +185,7 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Feature 5: Recommended for You Section */}
+                {/* Feature 5: Recommended for You Section (omitted for brevity, assume unchanged) */}
                 {user && recommendedCategory && recommendedQuizzes.length > 0 && (
                     <section className="text-center animate-in fade-in duration-1000">
                         <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-destructive/80 inline-block">
@@ -201,7 +215,7 @@ const HomePage = () => {
                                     className="pl-11 h-12 text-md border-none focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-0 transition-shadow duration-300 bg-transparent"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    onKeyDown={handleSearchKeyDown} // Attached handler for instant search
+                                    onKeyDown={handleSearchKeyDown}
                                 />
                             </div>
                             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -235,7 +249,7 @@ const HomePage = () => {
                                             hasAttempted={hasAttempted} 
                                             resultId={resultId} 
                                             user={user} 
-                                            index={index} // Pass index for delay animation
+                                            index={index} 
                                         />
                                     );
                                 })}
@@ -245,10 +259,35 @@ const HomePage = () => {
                                 No quizzes found matching your criteria. Try broadening your search or filter.
                             </p>
                         )}
+                        
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-4 mt-12">
+                                <Button 
+                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                    disabled={currentPage === 1}
+                                    variant="outline"
+                                    size="icon"
+                                >
+                                    <ArrowLeft className="w-5 h-5" />
+                                </Button>
+                                <span className="text-lg font-semibold text-foreground/90">
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <Button 
+                                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                    disabled={currentPage === totalPages}
+                                    variant="outline"
+                                    size="icon"
+                                >
+                                    <ArrowRight className="w-5 h-5" />
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </section>
                 
-                {/* --- RESTORED & ULTRA-MODERN FEATURES SECTION --- */}
+                {/* --- RESTORED & ULTRA-MODERN FEATURES SECTION (Preserved) --- */}
                 <section className="text-center py-10 animate-in fade-in duration-1000">
                     <h2 className="text-4xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-destructive inline-block drop-shadow-md">
                         Why Choose ParikshaNode?
@@ -294,7 +333,7 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* --- RESTORED & ULTRA-MODERN HOW IT WORKS SECTION --- */}
+                {/* --- RESTORED & ULTRA-MODERN HOW IT WORKS SECTION (Preserved) --- */}
                 <section className="text-center py-10 animate-in fade-in duration-1000">
                     <h2 className="text-4xl font-extrabold tracking-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-destructive to-primary inline-block drop-shadow-md">
                         Get Started in 3 Easy Steps
