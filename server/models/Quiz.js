@@ -5,15 +5,23 @@ const questionSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  // --- Feature 4: Expanded Question Types ---
+  type: {
+    type: String,
+    enum: ['multiple-choice', 'true-false', 'fill-in-the-blank', 'short-answer'],
+    default: 'multiple-choice'
+  },
   options: [{ 
     type: String, 
-    required: true 
+    required: function() {
+        return this.type === 'multiple-choice' || this.type === 'true-false';
+    }
   }],
-  correctAnswerIndex: { 
-    type: Number, 
+  correctAnswerIndex: { // Mixed data for index or string/array of strings
+    type: mongoose.Schema.Types.Mixed, 
     required: true 
   },
-  // Per-question timer in seconds
+  // ------------------------------------------
   timer: {
     type: Number,
     default: 30,
@@ -37,13 +45,18 @@ const quizSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  // Field to determine timer mode
+  // --- Feature 5: Enhanced Quiz Discovery (Tags) ---
+  tags: [{
+    type: String,
+    trim: true,
+    lowercase: true,
+  }],
+  // ------------------------------------------
   timerType: {
     type: String,
     enum: ['overall', 'per_question'],
     default: 'overall',
   },
-  // Overall timer in minutes
   timer: { 
     type: Number, 
     default: 10,
