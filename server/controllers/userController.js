@@ -2,9 +2,31 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 import { v2 as cloudinary } from 'cloudinary'; // Added import for existing updateUserProfilePicture logic
 
+// @desc    Get all users with pagination
+// @route   GET /api/users
+// @access  Private/Admin
 export const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.find({}).select('-password');
-    res.status(200).json(users);
+    const { page = 1, limit = 10 } = req.query; // Default limit 10
+    const pageSize = parseInt(limit);
+    const currentPage = parseInt(page);
+    const skip = pageSize * (currentPage - 1);
+    
+    // Get total count for pagination metadata
+    const count = await User.countDocuments({});
+    const totalPages = Math.ceil(count / pageSize);
+
+    const users = await User.find({})
+        .select('-password')
+        .limit(pageSize)
+        .skip(skip)
+        .sort({ createdAt: 1 }); // Sort by join date ascending
+
+    res.status(200).json({
+        users,
+        page: currentPage,
+        pages: totalPages,
+        totalUsers: count,
+    });
 });
 
 // @desc    Get user profile with achievements
