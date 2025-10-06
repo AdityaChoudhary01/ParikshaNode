@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/Label';
 import { PlusCircle, Edit, Trash2, Share2, Copy, BarChart2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
+import { cn } from '@/lib/utils'; // Import cn utility
 
 const AdminQuizListPage = () => {
   const { data: quizzes, isLoading, error, refetch } = useFetch('/quizzes');
@@ -36,58 +37,106 @@ const AdminQuizListPage = () => {
   if (error) return <p className="text-center text-destructive">Error: {error}</p>;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Manage All Quizzes</CardTitle>
-          <CardDescription>View, edit, or delete any quiz on the platform.</CardDescription>
+    <Card className={cn("shadow-2xl shadow-primary/20 border-primary/20", "animate-in fade-in slide-in-from-top-10 duration-700")}>
+      <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between py-6 border-b border-border/50 space-y-4 md:space-y-0">
+        <div className="flex-1 min-w-0">
+          <CardTitle className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text 
+                                  bg-gradient-to-r from-primary to-destructive drop-shadow-md">
+            Manage All Quizzes
+          </CardTitle>
+          <CardDescription className="text-lg mt-1">View, edit, or delete any quiz on the platform.</CardDescription>
         </div>
-        <Link to="/quiz/new">
-          <Button><PlusCircle className="w-4 h-4 mr-2" />Create New Quiz</Button>
+        
+        {/* FIX: Button forced to full width on mobile (w-full) but standard width on md screens */}
+        <Link to="/quiz/new" className="w-full md:w-auto">
+          <Button className="h-11 px-6 text-lg shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all duration-300 w-full">
+            <PlusCircle className="w-5 h-5 mr-2" />Create New Quiz
+          </Button>
         </Link>
       </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
+      <CardContent className="pt-6">
+        <div className="overflow-x-auto border rounded-xl shadow-inner">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Created By</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+              <TableRow className="bg-secondary/70">
+                <TableHead className="text-lg font-bold">Title</TableHead>
+                <TableHead className="text-lg font-bold">Category</TableHead>
+                <TableHead className="text-lg font-bold">Created By</TableHead>
+                <TableHead className="text-right text-lg font-bold">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {quizzes && quizzes.length > 0 ? (
-                quizzes.map((quiz) => (
-                  <TableRow key={quiz._id}>
-                    <TableCell className="font-medium">{quiz.title}</TableCell>
-                    <TableCell>{quiz.category}</TableCell>
+                quizzes.map((quiz, index) => (
+                  <TableRow 
+                      key={quiz._id}
+                      className={cn(
+                          "hover:bg-primary/5 transition-all duration-300 hover:shadow-md",
+                          "animate-in fade-in slide-in-from-bottom-2"
+                      )}
+                      style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <TableCell className="font-semibold text-foreground/90">{quiz.title}</TableCell>
+                    <TableCell className="text-muted-foreground">{quiz.category}</TableCell>
                     <TableCell className="text-muted-foreground text-sm">{quiz.createdBy?.username || 'N/A'}</TableCell>
                     <TableCell className="text-right space-x-2">
                        <Dialog>
                         <DialogTrigger asChild>
-                           <Button variant="outline" size="icon"><Share2 className="w-4 h-4" /></Button>
+                           <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                                <Share2 className="w-4 h-4 text-primary" />
+                            </Button>
                         </DialogTrigger>
                         <DialogContent>
-                          <DialogHeader><DialogTitle>Share Quiz</DialogTitle><DialogDescription>Share this link with anyone to take the quiz.</DialogDescription></DialogHeader>
-                           <div className="space-y-2">
-                            <Label>Quiz Link</Label>
-                            <div className="flex gap-2">
-                              <Input readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
-                              <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)}><Copy className="w-4 h-4"/></Button>
+                          <DialogHeader>
+                              <DialogTitle className="text-xl font-bold text-primary">Share Quiz</DialogTitle>
+                              <DialogDescription>Share this link with anyone to take the quiz.</DialogDescription>
+                          </DialogHeader>
+                           <div className="space-y-4">
+                            <div className="space-y-2 p-3 border-l-4 border-primary bg-primary/5 rounded-md shadow-inner">
+                                <Label className="font-semibold">Quiz Link</Label>
+                                <div className="flex gap-2">
+                                  <Input readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
+                                  <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)} className="shadow-sm">
+                                      <Copy className="w-4 h-4"/>
+                                  </Button>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="font-semibold">Quiz ID</Label>
+                                <Input readOnly value={quiz._id} />
                             </div>
                           </div>
                         </DialogContent>
                       </Dialog>
-                      <Link to={`/quiz/report/${quiz._id}`}><Button variant="outline" size="icon"><BarChart2 className="w-4 h-4" /></Button></Link>
-                      <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
+                      <Link to={`/quiz/report/${quiz._id}`}>
+                          <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                              <BarChart2 className="w-4 h-4 text-primary" />
+                          </Button>
+                      </Link>
+                      <Link to={`/quiz/edit/${quiz._id}`}>
+                          <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                              <Edit className="w-4 h-4 text-primary" />
+                          </Button>
+                      </Link>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)} className="shadow-md hover:shadow-lg transition-all">
+                          <Trash2 className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
-                <TableRow><TableCell colSpan="4" className="h-24 text-center">No quizzes found.</TableCell></TableRow>
+                <TableRow>
+                    <TableCell colSpan="4" className="h-24 text-center">
+                        <div className="py-8 space-y-4 border-2 border-dashed border-primary/30 rounded-xl bg-card/50">
+                            <p className="text-xl text-muted-foreground font-medium">No quizzes found.</p>
+                            <Link to="/quiz/new" className="w-full">
+                                <Button className="shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all duration-300">
+                                    Create First Quiz
+                                </Button>
+                            </Link>
+                        </div>
+                    </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
