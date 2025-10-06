@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/api/axiosConfig';
 
-export const useFetch = (url) => {
+export const useFetch = (url, dependencies = []) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +21,8 @@ export const useFetch = (url) => {
     } finally {
       setIsLoading(false);
     }
-  }, [url]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url, ...dependencies]); // Include dependencies in the dependency array
 
   useEffect(() => {
     fetchData();
