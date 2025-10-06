@@ -6,10 +6,15 @@ import { ListChecks, Users } from 'lucide-react';
 import { cn } from '@/lib/utils'; // Import cn utility
 
 const AdminDashboardPage = () => {
-  const { data: quizzes, isLoading: quizzesLoading } = useFetch('/quizzes');
-  const { data: users, isLoading: usersLoading } = useFetch('/users');
+  // FIX: Renamed fetched data variables to reflect paginated objects (e.g., quizData, userData)
+  const { data: quizData, isLoading: quizzesLoading } = useFetch('/quizzes');
+  const { data: userData, isLoading: usersLoading } = useFetch('/users');
 
   if (quizzesLoading || usersLoading) return <Loader />;
+
+  // FIX: Access the total count from the paginated response metadata
+  const totalQuizzes = quizData?.totalQuizzes || 0;
+  const totalUsers = userData?.totalUsers || 0;
 
   return (
     <div className="animate-in fade-in slide-in-from-top-10 duration-700">
@@ -32,7 +37,8 @@ const AdminDashboardPage = () => {
             <ListChecks className="h-6 w-6 text-primary drop-shadow-sm" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-primary">{quizzes?.length || 0}</div>
+            {/* FIX: Display the totalQuizzes count */}
+            <div className="text-4xl font-extrabold text-primary">{totalQuizzes}</div>
             <p className="text-sm text-muted-foreground mt-1">Total number of quizzes in the system.</p>
           </CardContent>
         </Card>
@@ -47,12 +53,11 @@ const AdminDashboardPage = () => {
             <Users className="h-6 w-6 text-primary drop-shadow-sm" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-extrabold text-primary">{users?.length || 0}</div>
+            {/* FIX: Display the totalUsers count */}
+            <div className="text-4xl font-extrabold text-primary">{totalUsers}</div>
             <p className="text-sm text-muted-foreground mt-1">Total number of registered users.</p>
           </CardContent>
         </Card>
-        
-        {/* You can add a third card here if needed, e.g., 'Quizzes Created Today' */}
         
       </div>
     </div>
