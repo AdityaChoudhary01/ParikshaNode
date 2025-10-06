@@ -8,16 +8,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/Dialog";
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import { PlusCircle, Edit, Trash2, Share2, Copy, BarChart2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Share2, Copy, BarChart2, Zap } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
 import { Helmet } from 'react-helmet-async';
+import { cn } from '@/lib/utils'; // Import cn utility
 
 const MyQuizzesPage = () => {
   const { data: quizzes, isLoading, error, refetch } = useFetch('/quizzes/myquizzes');
   
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this quiz?')) {
+    if (window.confirm('Are you sure you want to delete this quiz? This cannot be undone.')) {
       try {
         await api.delete(`/quizzes/${id}`);
         toast.success('Quiz deleted successfully');
@@ -42,90 +43,137 @@ const MyQuizzesPage = () => {
         <title>My Quizzes | ParikshaNode</title>
         <meta name="description" content="Manage and view reports for the quizzes you have created on ParikshaNode." />
       </Helmet>
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className={cn("max-w-4xl mx-auto shadow-2xl shadow-primary/20 border-primary/20", "animate-in fade-in slide-in-from-top-10 duration-700")}>
+        <CardHeader className="flex flex-row items-center justify-between py-6 border-b border-border/50">
           <div>
-            <CardTitle>My Quizzes</CardTitle>
-            <CardDescription>Manage and share the quizzes you have created.</CardDescription>
+            <CardTitle className="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text 
+                                  bg-gradient-to-r from-primary to-destructive drop-shadow-md">
+                My Quizzes
+            </CardTitle>
+            <CardDescription className="text-lg mt-1">Manage and share the quizzes you have created.</CardDescription>
           </div>
           <Link to="/quiz/new">
-            <Button><PlusCircle className="w-4 h-4 mr-2" />Create New Quiz</Button>
+            <Button className="h-11 px-6 text-lg shadow-lg shadow-primary/40 hover:shadow-primary/60 transition-all duration-300">
+              <PlusCircle className="w-5 h-5 mr-2" />Create New Quiz
+            </Button>
           </Link>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+        <CardContent className="pt-6">
+          <div className="overflow-x-auto border rounded-xl shadow-inner">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Questions</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                <TableRow className="bg-secondary/70">
+                  <TableHead className="text-lg font-bold">Title</TableHead>
+                  <TableHead className="text-lg font-bold">Category</TableHead>
+                  <TableHead className="text-lg font-bold">Questions</TableHead>
+                  <TableHead className="text-right text-lg font-bold">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {quizzes && quizzes.length > 0 ? (
-                  quizzes.map((quiz) => (
-                    <TableRow key={quiz._id}>
-                      <TableCell className="font-medium">{quiz.title}</TableCell>
-                      <TableCell>{quiz.category}</TableCell>
-                      <TableCell>{quiz.questions.length}</TableCell>
+                  quizzes.map((quiz, index) => (
+                    <TableRow 
+                        key={quiz._id} 
+                        className={cn(
+                            "hover:bg-primary/5 transition-all duration-300 hover:shadow-md",
+                            "animate-in fade-in slide-in-from-bottom-2"
+                        )}
+                        style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <TableCell className="font-semibold text-foreground/90">{quiz.title}</TableCell>
+                      <TableCell className="text-muted-foreground">{quiz.category}</TableCell>
+                      <TableCell className="font-medium text-primary">{quiz.questions.length}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button variant="outline" size="icon"><Share2 className="w-4 h-4" /></Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Share Quiz</DialogTitle>
-                              <DialogDescription>Share these links with anyone to take your quiz or download the app.</DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              {/* Quiz Web Link */}
-                              <div className="space-y-2">
-                                <Label htmlFor="quizLink">Quiz Link (Web & App)</Label>
-                                <div className="flex gap-2">
-                                  <Input id="quizLink" readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
-                                  <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)}><Copy className="w-4 h-4"/></Button>
-                                </div>
-                              </div>
+                        {/* Action Buttons Group */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                                <Share2 className="w-4 h-4 text-primary" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Share Quiz</DialogTitle>
+                              <DialogDescription>Share these links with others to take your quiz.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              
+                              {/* Live Quiz Link */}
+                              <div className="space-y-2 p-3 border-l-4 border-primary bg-primary/5 rounded-md shadow-inner">
+                                <Label htmlFor="liveLink" className="flex items-center font-extrabold text-primary"><Zap className="w-4 h-4 mr-2 fill-primary/50" /> Live Quiz Link (Multiplayer)</Label>
+                                <div className="flex gap-2">
+                                  <Input id="liveLink" readOnly value={`${window.location.origin}/live-quiz/${quiz._id}`} />
+                                  <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/live-quiz/${quiz._id}`)} className="shadow-sm">
+                                    <Copy className="w-4 h-4"/>
+                                  </Button>
+                                </div>
+                              </div>
 
-                              {/* App Download Link */}
-                              <div className="space-y-2">
-                                <Label htmlFor="appDownload">App Download Link (Android APK)</Label>
-                                {/** You can define this URL at the top of the component or pass it as a prop if it's dynamic. */}
-                                {/** For now, let's hardcode it based on the mobile version's code. */}
-                                <div className="flex gap-2">
-                                  <Input 
-                                    id="appDownload" 
-                                    readOnly 
-                                    value="https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk" 
-                                  />
-                                  <Button 
-                                    size="icon" 
-                                    onClick={() => copyToClipboard('https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk')}
-                                  >
-                                    <Copy className="w-4 h-4"/>
-                                  </Button>
-                                </div>
-                              </div>
+                              {/* Standard Quiz Web Link */}
+                              <div className="space-y-2">
+                                <Label htmlFor="quizLink">Standard Quiz Link (Single Player)</Label>
+                                <div className="flex gap-2">
+                                  <Input id="quizLink" readOnly value={`${window.location.origin}/quiz/${quiz._id}`} />
+                                  <Button size="icon" onClick={() => copyToClipboard(`${window.location.origin}/quiz/${quiz._id}`)} className="shadow-sm"><Copy className="w-4 h-4"/></Button>
+                                </div>
+                              </div>
 
-                              {/* Quiz ID (Optional, as per original code) */}
-                              <div className="space-y-2">
-                                <Label htmlFor="quizId">Quiz ID</Label>
-                                <Input id="quizId" readOnly value={quiz._id} />
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                        <Link to={`/quiz/report/${quiz._id}`}><Button variant="outline" size="icon"><BarChart2 className="w-4 h-4" /></Button></Link>
-                        <Link to={`/quiz/edit/${quiz._id}`}><Button variant="outline" size="icon"><Edit className="w-4 h-4" /></Button></Link>
-                        <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)}><Trash2 className="w-4 h-4" /></Button>
+                              {/* App Download Link */}
+                              <div className="space-y-2">
+                                <Label htmlFor="appDownload">App Download Link (Android APK)</Label>
+                                <div className="flex gap-2">
+                                  <Input 
+                                    id="appDownload" 
+                                    readOnly 
+                                    value="https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk" 
+                                  />
+                                  <Button 
+                                    size="icon" 
+                                    onClick={() => copyToClipboard('https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk')}
+                                    className="shadow-sm"
+                                  >
+                                    <Copy className="w-4 h-4"/>
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Quiz ID */}
+                              <div className="space-y-2">
+                                <Label htmlFor="quizId">Quiz ID</Label>
+                                <Input id="quizId" readOnly value={quiz._id} />
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        <Link to={`/quiz/report/${quiz._id}`}>
+                            <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                                <BarChart2 className="w-4 h-4 text-primary" />
+                            </Button>
+                        </Link>
+                        <Link to={`/quiz/edit/${quiz._id}`}>
+                            <Button variant="outline" size="icon" className="hover:border-primary/80 transition-colors">
+                                <Edit className="w-4 h-4 text-primary" />
+                            </Button>
+                        </Link>
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(quiz._id)} className="shadow-md hover:shadow-lg transition-all">
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow><TableCell colSpan="4" className="h-24 text-center">You haven't created any quizzes yet.</TableCell></TableRow>
+                  <TableRow>
+                    <TableCell colSpan="4" className="h-24 text-center">
+                        <div className="py-8 space-y-4 border-2 border-dashed border-primary/30 rounded-xl bg-card/50">
+                            <p className="text-xl text-muted-foreground font-medium">You haven't created any quizzes yet.</p>
+                            <Link to="/quiz/new">
+                                <Button className="shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all duration-300">
+                                    Start Creating!
+                                </Button>
+                            </Link>
+                        </div>
+                    </TableCell>
+                  </TableRow>
                 )}
               </TableBody>
             </Table>
