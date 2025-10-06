@@ -31,6 +31,25 @@ const userSchema = new mongoose.Schema({
       default: 'https://as2.ftcdn.net/v2/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg' 
     }
   },
+  // --- START: Feature 2: Gamification Counters & Achievements ---
+  quizzesCompletedCount: {
+    type: Number,
+    default: 0
+  },
+  quizzesCreatedCount: {
+    type: Number,
+    default: 0
+  },
+  totalCorrectAnswers: {
+    type: Number,
+    default: 0
+  },
+  achievements: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Achievement',
+    unique: true
+  }]
+  // --- END: Feature 2: Gamification Counters & Achievements ---
 }, { 
   timestamps: true,
   collection: 'parikshanode-users'
