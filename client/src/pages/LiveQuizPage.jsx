@@ -14,7 +14,7 @@ import { Helmet } from 'react-helmet-async';
 import { useFetch } from '@/hooks/useFetch';
 import { cn } from '@/lib/utils';
 
-const SOCKET_SERVER_URL = 'http://localhost:5001'; 
+const SOCKET_SERVER_URL = 'https://parikshanode-server.onrender.com'; 
 
 // --- Extracted Text Input Component (Preserved for focus fix) ---
 const MemoizedTextInput = memo(({ questionType, questionIndex, userAnswer, setUserAnswer, isAnswerLocked }) => {
