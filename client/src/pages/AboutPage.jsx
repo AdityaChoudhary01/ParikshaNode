@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Users, Code, Database, Palette, Wind, Github, Linkedin } from 'lucide-react';
+import { Users, Code, Database, Palette, Github, Linkedin } from 'lucide-react'; // Removed unused 'Wind' icon
 import { Helmet } from 'react-helmet-async';
+import { cn } from '@/lib/utils'; // Import cn for enhanced styling
 
 // ---- START: Updated Team Information with Social Links ----
 const teamMembers = [
@@ -9,7 +10,8 @@ const teamMembers = [
     name: 'Aditya Choudhary',
     role: 'Project Lead & Full-Stack Developer',
     bio: 'Aditya spearheaded the project, architecting the full-stack MERN application and ensuring seamless integration between the frontend and backend. He is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
-    imagePlaceholder: <Code className="w-16 h-16 text-muted-foreground" />,
+    // FIX: Using text-primary for a vibrant look
+    imagePlaceholder: <Code className="w-16 h-16 text-primary drop-shadow-md" />,
     github: 'https://github.com/AdityaChoudhary01',
     linkedin: 'https://www.linkedin.com/in/aditya-kumar-38093a304/',
   },
@@ -17,7 +19,7 @@ const teamMembers = [
     name: 'Suraj Mishra',
     role: 'Backend Developer',
     bio: 'Suraj was instrumental in building the robust backend, focusing on the Express API, MongoDB database schemas, and server-side logic. He is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
-    imagePlaceholder: <Database className="w-16 h-16 text-muted-foreground" />,
+    imagePlaceholder: <Database className="w-16 h-16 text-primary drop-shadow-md" />,
     github: 'https://github.com/',
     linkedin: 'https://www.linkedin.com/in/suraj-mishra-a1b161258',
   },
@@ -25,7 +27,7 @@ const teamMembers = [
     name: 'Amrita Yadav',
     role: 'Frontend Developer',
     bio: 'Amrita brought the application to life with her expertise in React and state management, building the interactive quiz and user dashboard components. She is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
-    imagePlaceholder: <Users className="w-16 h-16 text-muted-foreground" />,
+    imagePlaceholder: <Users className="w-16 h-16 text-primary drop-shadow-md" />,
     github: 'https://github.com/amritalearns',
     linkedin: 'https://www.linkedin.com/in/amrita-yadav-a28192292/',
   },
@@ -33,7 +35,7 @@ const teamMembers = [
     name: 'Sachin Mourya',
     role: 'UI/UX Designer',
     bio: 'Sachin is the creative force behind the visually appealing and intuitive design, responsible for the theme, dark mode, and overall user experience. He is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
-    imagePlaceholder: <Palette className="w-16 h-16 text-muted-foreground" />,
+    imagePlaceholder: <Palette className="w-16 h-16 text-primary drop-shadow-md" />,
     github: 'https://github.com/sachn2k4',
     linkedin: 'www.linkedin.com/in/sachin-mourya-905148247',
   },
@@ -48,52 +50,70 @@ const AboutPage = () => {
         <meta name="description" content="Learn about the student team and the mission behind the ParikshaNode App project." />
       </Helmet>
       <div className="max-w-5xl mx-auto space-y-20">
-        {/* Hero Section */}
-        <section className="text-center py-12">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl">About ParikshaNode</h1>
-          <p className="mt-4 text-xl text-muted-foreground">
+        
+        {/* Hero Section - Animated and Gradient */}
+        <section className="text-center py-16 animate-in fade-in slide-in-from-top-10 duration-700">
+          <h1 className="text-5xl font-extrabold tracking-tight lg:text-7xl text-transparent bg-clip-text 
+                        bg-gradient-to-r from-primary to-destructive drop-shadow-xl">
+            Building the Future of Quizzing
+          </h1>
+          <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
             We're on a mission to make knowledge accessible and engaging for everyone.
           </p>
         </section>
 
-        {/* Our Story Section */}
-        <section className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold tracking-tight">Our Story</h2>
-            <p className="text-muted-foreground">
+        {/* Our Story Section - Modern Layout with Image Focus */}
+        <section className="grid md:grid-cols-2 gap-12 items-center animate-in fade-in slide-in-from-left-8 duration-700 delay-200">
+          <div className="space-y-6">
+            <h2 className="text-4xl font-bold tracking-tight text-foreground/90">Our Story: From Project to Platform</h2>
+            <p className="text-lg text-muted-foreground">
               ParikshaNode started as a final year project at GNIOT, Greater Noida. As Computer Science students, we wanted to build a practical, real-world application that could be genuinely useful. We saw an opportunity to create a modern, ad-free quiz platform that we and our peers would actually want to use.
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-lg text-muted-foreground font-semibold border-l-4 border-primary pl-4 py-1 bg-secondary/50">
               This app is the culmination of our collective skills in full-stack development and UI/UX design, representing countless hours of coding and collaboration from our 2022-2026 batch.
             </p>
           </div>
-          <div className="w-full rounded-lg overflow-hidden shadow-md">
+          <div className="w-full rounded-2xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/30 
+                        transform hover:scale-[1.02] transition-transform duration-500">
             <img
               src="https://img.jagranjosh.com/images/2022/July/1572022/GNIOT.jpg"
               alt="GNIOT Campus"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover opacity-90"
               style={{ minHeight: '200px' }}
             />
           </div>
         </section>
 
-        {/* Meet the Team Section */}
+        {/* Meet the Team Section - Card Animations */}
         <section className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Meet the Team</h2>
-          <p className="mt-2 text-muted-foreground">The final year CSE students behind ProQuiz.</p>
+          <h2 className="text-4xl font-bold tracking-tight text-foreground/90 animate-in fade-in duration-700 delay-300">Meet the Core Team</h2>
+          <p className="mt-2 text-lg text-muted-foreground animate-in fade-in duration-700 delay-400">The final year CSE students who built ParikshaNode.</p>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member) => (
-              <Card key={member.name} className="text-center">
-                <CardContent className="pt-6">
-                  <div className="w-24 h-24 bg-secondary rounded-full mx-auto flex items-center justify-center mb-4">
+            {teamMembers.map((member, index) => (
+              <Card 
+                key={member.name} 
+                className={cn(
+                    "text-center transition-all duration-500 border-primary/20 hover:border-primary hover:shadow-xl hover:shadow-primary/30",
+                    "hover:scale-[1.03] animate-in fade-in zoom-in-75"
+                )}
+                style={{ animationDelay: `${400 + index * 100}ms` }}
+              >
+                <CardContent className="pt-6 flex flex-col items-center">
+                  <div className="w-24 h-24 bg-secondary/70 rounded-full mx-auto flex items-center justify-center mb-4 border-4 border-primary/20 shadow-inner shadow-primary/20">
                     {member.imagePlaceholder}
                   </div>
-                  <h3 className="text-xl font-semibold">{member.name}</h3>
-                  <p className="text-primary font-medium">{member.role}</p>
-                  <p className="text-sm text-muted-foreground mt-2">{member.bio}</p>
-                  <div className="flex justify-center space-x-4 mt-4">
-                    <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Github /></a>
-                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Linkedin /></a>
+                  <h3 className="text-xl font-bold text-foreground">{member.name}</h3>
+                  <p className="text-lg text-primary font-medium mb-3">{member.role}</p>
+                  <p className="text-sm text-muted-foreground h-16 overflow-hidden">{member.bio}</p>
+                  <div className="flex justify-center space-x-5 mt-4">
+                    <a href={member.github} target="_blank" rel="noopener noreferrer" 
+                       className="text-muted-foreground hover:text-primary transition-colors hover:scale-110 duration-200">
+                        <Github className="w-6 h-6" />
+                    </a>
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" 
+                       className="text-muted-foreground hover:text-primary transition-colors hover:scale-110 duration-200">
+                        <Linkedin className="w-6 h-6" />
+                    </a>
                   </div>
                 </CardContent>
               </Card>
@@ -101,15 +121,36 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* Our Technology Section */}
-        <section className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Built with Modern Technology</h2>
-          <p className="mt-2 text-muted-foreground">We use a powerful and scalable stack to deliver a seamless experience.</p>
+        {/* Our Technology Section - Animated Grid */}
+        <section className="text-center pb-12">
+          <h2 className="text-4xl font-bold tracking-tight text-foreground/90 animate-in fade-in duration-700 delay-500">Built with Modern Technology</h2>
+          <p className="mt-2 text-lg text-muted-foreground animate-in fade-in duration-700 delay-600">We use a powerful and scalable stack to deliver a seamless experience.</p>
           <div className="max-w-3xl mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="flex flex-col items-center space-y-2"><Database className="w-12 h-12 text-primary" /><p className="font-semibold">MongoDB</p></div>
-            <div className="flex flex-col items-center space-y-2"><p className="text-4xl font-extrabold">Ex</p><p className="font-semibold">Express.js</p></div>
-            <div className="flex flex-col items-center space-y-2"><Code className="w-12 h-12 text-primary" /><p className="font-semibold">React</p></div>
-            <div className="flex flex-col items-center space-y-2"><p className="text-4xl font-extrabold">N</p><p className="font-semibold">Node.js</p></div>
+            
+            {/* MongoDB */}
+            <div className="flex flex-col items-center space-y-3 animate-in zoom-in-75 duration-700 delay-700">
+                <Database className="w-16 h-16 text-primary drop-shadow-lg" />
+                <p className="font-extrabold text-lg text-foreground/90">MongoDB</p>
+            </div>
+            
+            {/* Express.js */}
+            <div className="flex flex-col items-center space-y-3 animate-in zoom-in-75 duration-700 delay-800">
+                <p className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-destructive">Ex</p>
+                <p className="font-extrabold text-lg text-foreground/90">Express.js</p>
+            </div>
+            
+            {/* React */}
+            <div className="flex flex-col items-center space-y-3 animate-in zoom-in-75 duration-700 delay-900">
+                <Code className="w-16 h-16 text-primary drop-shadow-lg" />
+                <p className="font-extrabold text-lg text-foreground/90">React</p>
+            </div>
+            
+            {/* Node.js */}
+            <div className="flex flex-col items-center space-y-3 animate-in zoom-in-75 duration-700 delay-1000">
+                <p className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-destructive">N</p>
+                <p className="font-extrabold text-lg text-foreground/90">Node.js</p>
+            </div>
+
           </div>
         </section>
       </div>
@@ -118,5 +159,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-
-
