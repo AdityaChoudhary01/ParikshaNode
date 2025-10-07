@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux';
 import { useFetch } from '@/hooks/useFetch';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input'; 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"; 
+import { Input } from '@/components/ui/Input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 import Loader from '@/components/Loader';
 // PRESERVED: All icons are imported as requested
-import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart, Trophy, FileText, Search, Zap, ArrowLeft, ArrowRight } from 'lucide-react'; 
+// ADDED: Download and X icon for the APK button
+import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart, Trophy, FileText, Search, Zap, ArrowLeft, ArrowRight, Download, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { cn } from '@/lib/utils'; // Utility for complex class names
 
@@ -42,11 +43,14 @@ const HomePage = () => {
     // State 1: Instant value in the input field (updates on every keystroke)
     const [searchTerm, setSearchTerm] = useState('');
     // State 2: Override value for immediate search (only updates on Enter key)
-    const [instantSearchTerm, setInstantSearchTerm] = useState(''); 
+    const [instantSearchTerm, setInstantSearchTerm] = useState(''); 
     const [selectedCategory, setSelectedCategory] = useState('All');
     
+    // NEW STATE: For controlling the visibility of the APK button
+    const [showApkButton, setShowApkButton] = useState(true);
+
     // Debounced value (updates 5000ms after the user stops typing)
-    const debouncedSearchTerm = useDebounce(searchTerm, 5000); 
+    const debouncedSearchTerm = useDebounce(searchTerm, 5000); 
     
     // Active search term: prioritize instantSearchTerm, then fall back to debounced term
     const activeSearchTerm = useMemo(() => {
@@ -143,6 +147,11 @@ const HomePage = () => {
     if (quizzesLoading || historyLoading) return <Loader />;
     if (error) return <p className="text-center text-destructive">Error: {error}</p>;
 
+    // NEW: Handler to hide the button
+    const handleHideApkButton = () => {
+        setShowApkButton(false);
+    };
+
     return (
         <>
             <Helmet>
@@ -152,13 +161,13 @@ const HomePage = () => {
             <div className="space-y-20">
                 {/* Hero Section - Ultra Modern Design (omitted for brevity, assume unchanged) */}
                 <section className="text-center py-20 md:py-32 relative overflow-hidden rounded-3xl border border-primary/20 shadow-2xl shadow-primary/30 
-                                    bg-gradient-to-br from-card/80 via-background to-card/80 
-                                    before:content-[''] before:absolute before:inset-0 before:opacity-20 before:bg-primary/20 before:dark:opacity-10 
-                                    before:[mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]">
+                                 bg-gradient-to-br from-card/80 via-background to-card/80 
+                                 before:content-[''] before:absolute before:inset-0 before:opacity-20 before:bg-primary/20 before:dark:opacity-10 
+                                 before:[mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]">
                     
                     <div className="relative z-10 animate-in fade-in slide-in-from-top-10 duration-700">
                         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl text-transparent bg-clip-text 
-                                    bg-gradient-to-r from-primary to-destructive drop-shadow-xl">
+                                     bg-gradient-to-r from-primary to-destructive drop-shadow-xl">
                             Master Any Subject, One Quiz at a Time
                         </h1>
                         <p className="mt-6 text-xl text-muted-foreground max-w-3xl mx-auto opacity-90">
@@ -189,7 +198,7 @@ const HomePage = () => {
                 {user && recommendedCategory && recommendedQuizzes.length > 0 && (
                     <section className="text-center animate-in fade-in duration-1000">
                         <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-destructive/80 inline-block">
-                             Recommended for You ✨
+                                Recommended for You ✨
                         </h2>
                         <p className="mt-2 text-muted-foreground">Based on your past interest in **{recommendedCategory}**</p>
                         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -358,6 +367,39 @@ const HomePage = () => {
                 </section>
                 
             </div>
+
+            {/* NEW: Sticky APK Download Button in Bottom Right Corner */}
+            {showApkButton && (
+                <div className="fixed bottom-4 right-4 z-50">
+                    <div className="relative group">
+                        {/* Cross/Close Button */}
+                        <Button
+                            onClick={handleHideApkButton}
+                            size="icon"
+                            variant="destructive"
+                            className="absolute -top-3 -right-3 h-8 w-8 rounded-full shadow-lg z-50 transition-transform duration-200 hover:scale-110"
+                            aria-label="Hide APK Download Button"
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+
+                        {/* APK Download Button */}
+                        <a 
+                            href="https://github.com/AdityaChoudhary01/ParikshaNode/releases/download/v1.0.0/parikshanode.apk"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block"
+                        >
+                            <Button
+                                className="h-14 px-6 rounded-xl text-lg font-bold shadow-2xl shadow-primary/50 transition-all duration-300 bg-primary hover:bg-primary/90 hover:scale-[1.02] flex items-center gap-2"
+                            >
+                                <Download className="h-6 w-6" />
+                                Get App (APK)
+                            </Button>
+                        </a>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
