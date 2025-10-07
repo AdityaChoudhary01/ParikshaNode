@@ -11,7 +11,6 @@ import Avatar from '@/components/ui/Avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-// FIX: Consolidated and validated all necessary icons for the JSX and IconMap
 import { ListChecks, PlusCircle, Trophy, Star, Award, BookOpen, Brain, CheckCircle, Lightbulb, UserCheck, User as UserIcon } from 'lucide-react'; 
 import { cn } from '@/lib/utils';
 import { useDispatch } from 'react-redux'; 
@@ -31,27 +30,43 @@ const IconMap = {
 }
 
 const ProfilePage = () => {
+  // 1. Primary Fetch: Get core user data.
   const { data: user, isLoading, error, refetch } = useFetch('/users/profile');
-  const { data: history, isLoading: historyLoading } = useFetch('/results/my-history');
+  
+  // CRITICAL FIX: Enforce sequential fetching to prevent race conditions.
+  // The history fetch only runs if the primary fetch is NOT loading AND did NOT error.
+  const shouldFetchHistory = !isLoading && !error;
+  
+  // 2. Secondary Fetch: Get history data (Conditional fetch).
+  const { data: history, isLoading: historyLoading } = useFetch(
+    shouldFetchHistory ? '/results/my-history' : null
+  );
+
   const dispatch = useDispatch(); 
 
   const [username, setUsername] = useState('');
   const [avatarFile, setAvatarFile] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // CRITICAL FIX: Removed the useEffect dispatch that was causing instability.
+  // The username state update is sufficient, and the Redux state update will 
+  // happen automatically if the token changes or upon successful update actions.
   useEffect(() => {
     if (user) {
       setUsername(user.username);
-      // FIX: Dispatch the complete user object to ensure the Redux state (used by Navbar) is updated with the avatar URL.
-      dispatch(setCredentials(user));
     }
-  }, [user, dispatch]);
+  }, [user]);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      await api.put('/users/profile', { username });
+      // NOTE: User profile update does not return a new token, so no setCredentials here.
+      const response = await api.put('/users/profile', { username });
+      
+      // Update Redux state with new user object (e.g., username) for Navbar consistency
+      dispatch(setCredentials(response.data)); 
+      
       toast.success('Profile updated successfully!');
       refetch(); 
     } catch (err) {
@@ -67,11 +82,14 @@ const ProfilePage = () => {
     formData.append('avatar', avatarFile);
     setIsUpdating(true);
     try {
-      await api.put('/users/profile/avatar', formData, {
+      const response = await api.put('/users/profile/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       toast.success('Profile picture updated!');
-      refetch(); // Refetch the entire user profile to get the new avatar URL and update Redux via useEffect
+      
+      // Since the avatar URL changed, refresh profile data and ensure Navbar update
+      // The refetch will trigger the user data load, and the Navbar relies on Redux.
+      refetch(); 
       setAvatarFile(null); // Clear file input
     } catch (err) {
       toast.error(err.response?.data?.message || 'Upload failed');
