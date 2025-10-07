@@ -26,7 +26,7 @@ export const submitContactForm = asyncHandler(async (req, res) => {
     // 1. SENDER: Must be verified in Brevo
     sendSmtpEmail.sender = {
         email: process.env.BREVO_VERIFIED_SENDER_EMAIL, 
-        name: `${name} (via ProQuiz)`, 
+        name: `${name} (via ParikshaNode)`, 
     };
     
     // 2. TO: Your receiving address
@@ -36,11 +36,11 @@ export const submitContactForm = asyncHandler(async (req, res) => {
     sendSmtpEmail.replyTo = { email: email, name: name };
     
     // 4. SUBJECT
-    sendSmtpEmail.subject = `New ProQuiz Contact Message from ${name}`;
+    sendSmtpEmail.subject = `New ParikshaNode Contact Message from ${name}`;
     
     // 5. HTML CONTENT (Recommended over plain text for Brevo API)
     sendSmtpEmail.htmlContent = `
-        <h3>You have received a new message from your ProQuiz contact form:</h3>
+        <h3>You have received a new message from your ParikhsaNode contact form:</h3>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
         <p><strong>Message:</strong></p>
@@ -64,3 +64,4 @@ export const submitContactForm = asyncHandler(async (req, res) => {
         throw new Error('Email could not be sent. Check server logs for Brevo API details.');
     }
 });
+
