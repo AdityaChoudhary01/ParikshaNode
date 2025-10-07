@@ -23,6 +23,9 @@ const protect = asyncHandler(async (req, res, next) => {
 
       next();
     } catch (error) {
+      // DIAGNOSTIC LOG: This will show if the token is "expired" or has an "invalid signature"
+      console.error(`JWT VALIDATION FAILED on ${req.originalUrl}:`, error.name, error.message);
+      
       res.status(401);
       throw new Error('Not authorized, token failed');
     }
