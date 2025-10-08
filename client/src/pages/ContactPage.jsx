@@ -10,6 +10,62 @@ import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/Accordion"
 import { Mail, Phone } from 'lucide-react'; 
 
+// --- SEO CONSTANTS ---
+const SITE_NAME = "ParikshaNode";
+const SITE_URL = "https://parikshanode.netlify.app/"; // IMPORTANT: Replace with your live domain
+const CONTACT_URL = `${SITE_URL}contact`;
+const SUPPORT_EMAIL = "aadiwrld01@gmail.com";
+const SUPPORT_PHONE = "+91 12345 67890"; // Use E.164 format if possible, but keeping your format for now.
+
+// --- FAQ Data for Schema Markup ---
+const faqData = [
+    {
+        question: "How do I create a quiz?",
+        answer: "To create a quiz, you must have an admin account. Once logged in as an admin, navigate to the Admin Dashboard and select \"Manage Quizzes\" to find the \"Create New Quiz\" button. (Note: Non-admin users can use the 'Generate with AI' feature on the New Quiz page.)"
+    },
+    {
+        question: "Is ParikshaNode free to use?",
+        answer: "Yes, ParikshaNode is completely free for all users. We are supported by donations from our community, which you can make on our \"Donate\" page."
+    },
+    {
+        question: "How is my score calculated?",
+        answer: "Your score is calculated based on the number of questions you answer correctly. The results page provides a detailed breakdown of your performance after each quiz."
+    }
+];
+
+// --- SEO: JSON-LD Structured Data Schema (Organization and FAQPage) ---
+const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            // Organization Schema with ContactPoint for Search Snippets
+            "@type": "Organization",
+            "name": SITE_NAME,
+            "url": SITE_URL,
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": SUPPORT_PHONE,
+                "contactType": "customer service",
+                "email": SUPPORT_EMAIL,
+                "areaServed": "IN" // Set this to your primary area of service or use "World"
+            }
+        },
+        {
+            // FAQPage Schema for Rich Snippets (to show questions directly in Google results)
+            "@type": "FAQPage",
+            "mainEntity": faqData.map(item => ({
+                "@type": "Question",
+                "name": item.question,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": item.answer
+                }
+            }))
+        }
+    ]
+};
+// ----------------------------------------------------------------
+
 const ContactPage = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [isLoading, setIsLoading] = useState(false);
@@ -36,19 +92,31 @@ const ContactPage = () => {
     return (
         <>
         <Helmet>
-          <title>Contact Us | ParikshaNode</title>
-          <meta name="description" content="Have a question or feedback? Get in touch with the ParikshaNode team through our contact form or find answers in our FAQ." />
+            {/* Primary SEO Tags */}
+            <title>Contact ParikshaNode | Support, Feedback & Project Inquiries</title>
+            <meta 
+                name="description" 
+                content="Contact the ParikshaNode MERN quiz project team directly. Send feedback, technical questions, or business inquiries via our form, or find instant answers in our detailed FAQ section." 
+            />
+            <link rel="canonical" href={CONTACT_URL} />
+
+            {/* Structured Data (JSON-LD) for Contact and FAQ Rich Snippets */}
+            <script type="application/ld+json">
+                {JSON.stringify(schemaMarkup)}
+            </script>
         </Helmet>
-        <div className="max-w-6xl mx-auto space-y-16 py-8">
+        <div className="max-w-6xl mx-auto space-y-16 py-8 p-4 sm:p-6 lg:p-8">
             {/* Hero Section - Ultra Modern Title */}
             <div className="text-center animate-in fade-in slide-in-from-top-10 duration-700">
+                {/* H1 for primary page focus */}
                 <h1 className="text-5xl font-extrabold tracking-tight lg:text-7xl text-transparent bg-clip-text 
-                                bg-gradient-to-r from-primary to-destructive drop-shadow-lg">
+                                 bg-gradient-to-r from-primary to-destructive drop-shadow-lg">
                     Have a Question? Let's Connect
                 </h1>
-                <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
+                {/* H2 for secondary descriptive heading */}
+                <h2 className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
                     We're here to help and answer any question you might have about our platform or project.
-                </p>
+                </h2>
             </div>
 
             {/* Main Content Grid - Staggered Animation */}
@@ -62,11 +130,23 @@ const ContactPage = () => {
                         <CardContent className="space-y-6">
                             <div className="flex items-center p-3 rounded-lg bg-secondary/50 border-l-4 border-primary shadow-inner">
                                 <Mail className="w-6 h-6 mr-4 text-primary animate-pulse" />
-                                <a href="mailto:aadiwrld01@gmail.com" className="hover:underline text-lg font-medium text-foreground">aadiwrld01@gmail.com</a>
+                                <a 
+                                    href={`mailto:${SUPPORT_EMAIL}`} 
+                                    className="hover:underline text-lg font-medium text-foreground"
+                                    aria-label="Email the ParikshaNode team"
+                                >
+                                    {SUPPORT_EMAIL}
+                                </a>
                             </div>
                             <div className="flex items-center p-3 rounded-lg bg-secondary/50 border-l-4 border-primary shadow-inner">
                                 <Phone className="w-6 h-6 mr-4 text-primary" />
-                                <span className="text-lg font-medium text-foreground">+91 12345 67890</span>
+                                <a 
+                                    href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} 
+                                    className="text-lg font-medium text-foreground hover:underline"
+                                    aria-label="Call the support number"
+                                >
+                                    {SUPPORT_PHONE}
+                                </a>
                             </div>
                         </CardContent>
                     </Card>
@@ -76,18 +156,12 @@ const ContactPage = () => {
                         <CardHeader><CardTitle className="text-2xl text-primary/90">Frequently Asked Questions</CardTitle></CardHeader>
                         <CardContent>
                             <Accordion type="single" collapsible className="w-full space-y-2">
-                                <AccordionItem value="item-1" className="border-b-2 border-primary/20">
-                                    <AccordionTrigger className="font-bold hover:text-primary transition-colors">How do I create a quiz?</AccordionTrigger>
-                                    <AccordionContent className="text-muted-foreground">To create a quiz, you must have an admin account. Once logged in as an admin, navigate to the Admin Dashboard and select "Manage Quizzes" to find the "Create New Quiz" button. (Note: Non-admin users can use the 'Generate with AI' feature on the New Quiz page.)</AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="item-2" className="border-b-2 border-primary/20">
-                                    <AccordionTrigger className="font-bold hover:text-primary transition-colors">Is ParikshaNode free to use?</AccordionTrigger>
-                                    <AccordionContent className="text-muted-foreground">Yes, ParikshaNode is completely free for all users. We are supported by donations from our community, which you can make on our "Donate" page.</AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="item-3" className="border-b-2 border-primary/20">
-                                    <AccordionTrigger className="font-bold hover:text-primary transition-colors">How is my score calculated?</AccordionTrigger>
-                                    <AccordionContent className="text-muted-foreground">Your score is calculated based on the number of questions you answer correctly. The results page provides a detailed breakdown of your performance after each quiz.</AccordionContent>
-                                </AccordionItem>
+                                {faqData.map((item, index) => (
+                                    <AccordionItem key={index} value={`item-${index}`} className="border-b-2 border-primary/20">
+                                        <AccordionTrigger className="font-bold hover:text-primary transition-colors">{item.question}</AccordionTrigger>
+                                        <AccordionContent className="text-muted-foreground">{item.answer}</AccordionContent>
+                                    </AccordionItem>
+                                ))}
                             </Accordion>
                         </CardContent>
                     </Card>
@@ -121,6 +195,5 @@ const ContactPage = () => {
         </>
     );
 };
-
 
 export default ContactPage;
