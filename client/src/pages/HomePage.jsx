@@ -13,6 +13,14 @@ import { Clock, HelpCircle, Tag, BookOpen, LayoutDashboard, BarChart, Trophy, Fi
 import { Helmet } from 'react-helmet-async';
 import { cn } from '@/lib/utils'; // Utility for complex class names
 
+
+// SEO CONSTANTS
+const SITE_NAME = "ParikshaNode";
+const SITE_URL = "https://parikshanode.netlify.app/";
+const LOGO_URL = "https://parikshanode.netlify.app/logo.png";
+const MAIN_TITLE = `${SITE_NAME} | Master Any Subject, One Quiz at a Time`;
+const MAIN_DESCRIPTION = "ParikshaNode is the next generation MERN stack quiz platform. Create, share, and challenge yourself with thousands of expert-curated quizzes. Perfect for students and professionals to track progress with deep analytics, join live battles, and enhance knowledge across science, history, programming, and more.";
+
 // --- START: useDebounce Hook Definition (Preserved) ---
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -144,6 +152,34 @@ const HomePage = () => {
         setInstantSearchTerm(searchTerm); // Force immediate search on click/explicit submit
     };
 
+     // --- SEO: JSON-LD Structured Data Schema ---
+    const schemaMarkup = {
+        "@context": "https://schema.org",
+        "@graph": [
+           {
+                // WebSite Schema for Search Box Sitelinks and overall site context
+                "@type": "WebSite",
+                "name": SITE_NAME,
+                "url": SITE_URL,
+                "description": MAIN_DESCRIPTION
+            },
+            {
+                // Organization Schema for brand recognition
+                "@type": "Organization",
+                "name": SITE_NAME,
+                "url": SITE_URL,
+                "logo": LOGO_URL,
+                "sameAs": [
+                    // Add your social media links here
+                    "https://github.com/AdityaChoudhary01/ParikshaNode", 
+                     "https://www.instagram.com/aditya_choudhary__021/",
+                    "https://www.linkedin.com/in/aditya-kumar-38093a304/"
+                    // "https://www.linkedin.com/company/yourcompany/" 
+                ]
+            }
+        ]
+    };
+
     if (quizzesLoading || historyLoading) return <Loader />;
     if (error) return <p className="text-center text-destructive">Error: {error}</p>;
 
@@ -155,8 +191,23 @@ const HomePage = () => {
     return (
         <>
             <Helmet>
-                <title>ParikshaNode | Master Any Subject, One Quiz at a Time</title>
-                <meta name="description" content="An advanced MERN stack quiz platform to create, share, and take quizzes. Perfect for students and professionals to test and enhance their knowledge." />
+                {/* Primary SEO Tags */}
+                <title>{MAIN_TITLE}</title>
+                <meta name="description" content={MAIN_DESCRIPTION} />
+                <link rel="canonical" href={SITE_URL} />
+                
+                {/* Open Graph Tags (for social media sharing) */}
+                <meta property="og:title" content={MAIN_TITLE} />
+                <meta property="og:description" content={MAIN_DESCRIPTION} />
+                <meta property="og:url" content={SITE_URL} />
+                <meta property="og:site_name" content={SITE_NAME} />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content={LOGO_URL} />
+
+                {/* Structured Data (Schema.org) for Rich Snippets */}
+                <script type="application/ld+json">
+                    {JSON.stringify(schemaMarkup)}
+                </script>
             </Helmet>
             <div className="space-y-20">
                 {/* Hero Section - Ultra Modern Design (omitted for brevity, assume unchanged) */}
@@ -459,3 +510,4 @@ const QuizCard = ({ quiz, hasAttempted, resultId, user, index }) => {
 };
 
 export default HomePage;
+
