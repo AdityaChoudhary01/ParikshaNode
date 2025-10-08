@@ -50,9 +50,6 @@ const LoginPage = () => {
                     content="Securely log in to your ParikshaNode account to track your quiz history, view detailed performance analytics, access admin tools (if applicable), and start new learning challenges." 
                 />
                 <link rel="canonical" href={LOGIN_URL} />
-                
-                {/* ⚠️ OPTIONAL: Prevent Indexing (Recommended for Login/Auth pages) */}
-                <meta name="robots" content="noindex, nofollow" />
             </Helmet>
             <div className="flex justify-center items-center min-h-[80vh]">
                 <Card className={cn(
@@ -114,3 +111,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
