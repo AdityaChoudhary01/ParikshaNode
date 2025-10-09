@@ -10,6 +10,7 @@ This project was developed as a **final-year project** by **Computer Science stu
 ## 🌍 Live Demo  
 [parikshanode](https://parikshanode.netlify.app/)
 
+
 ---
 
 ## ✨ Features  
@@ -40,6 +41,13 @@ ParikshaNode is packed with features for both **users** and **admins**:
 - **Email:** Nodemailer  
 
 ---
+## All Public Urls
+https://parikshanode.netlify.app/login
+https://parikshanode.netlify.app/about
+https://parikshanode.netlify.app/contact
+https://parikshanode.netlify.app/donate
+https://parikshanode.netlify.app/
+https://parikshanode.netlify.app/register
 
 ## 🚀 Getting Started  
 
