@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // 👈 IMPORT Link for internal linking
 import { Card, CardContent } from '@/components/ui/Card';
 import { Users, Code, Database, Palette, Github, Linkedin } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -6,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 // --- SEO CONSTANTS ---
 const SITE_NAME = "ParikshaNode";
-const SITE_URL = "https://parikshanode.netlify.app/"; // IMPORTANT: Replace with your live domain
+const SITE_URL = "https://parikshanode.netlify.app/"; // IMPORTANT: This is now correctly set to your site URL
 const ABOUT_URL = `${SITE_URL}about`;
 
 // ---- START: Updated Team Information with Social Links (KEEP THESE UP-TO-DATE) ----
@@ -24,7 +25,7 @@ const teamMembers = [
         role: 'Backend Developer',
         bio: 'Suraj was instrumental in building the robust backend, focusing on the Express API, MongoDB database schemas, and server-side logic. He is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
         imagePlaceholder: <Database className="w-16 h-16 text-primary drop-shadow-md" />,
-        github: 'https://github.com/', // NOTE: Add Suraj's full GitHub URL
+        github: 'https://github.com/', 
         linkedin: 'https://www.linkedin.com/in/suraj-mishra-a1b161258',
     },
     {
@@ -41,7 +42,7 @@ const teamMembers = [
         bio: 'Sachin is the creative force behind the visually appealing and intuitive design, responsible for the theme, dark mode, and overall user experience. He is a final year B.Tech CSE student at GNIOT, from the 2022-2026 batch.',
         imagePlaceholder: <Palette className="w-16 h-16 text-primary drop-shadow-md" />,
         github: 'https://github.com/sachn2k4',
-        linkedin: 'https://www.linkedin.com/in/sachin-mourya-905148247', // Fixed URL structure
+        linkedin: 'https://www.linkedin.com/in/sachin-mourya-905148247',
     },
 ];
 // ---- END: Updated Team Information ----
@@ -108,19 +109,19 @@ const AboutPage = () => {
                     </h1>
                     {/* H2 for SEO - Main descriptive subheading */}
                     <h2 className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
-                        We're on a mission to make knowledge accessible and engaging for everyone.
+                        We're on a mission to make knowledge accessible and engaging for everyone. Have a technical question? <Link to="/contact" className="font-semibold text-primary hover:underline">Contact the Team</Link>.
                     </h2>
                 </section>
 
-                {/* Our Story Section - Modern Layout with Image Focus */}
+                {/* Our Story Section - Internal Links added here */}
                 <section className="grid md:grid-cols-2 gap-12 items-center animate-in fade-in slide-in-from-left-8 duration-700 delay-200">
                     <div className="space-y-6">
                         <h3 className="text-4xl font-bold tracking-tight text-foreground/90">Our Story: From Project to Platform</h3>
                         <p className="text-lg text-muted-foreground">
-                            ParikshaNode started as a **final year project at GNIOT, Greater Noida**. As Computer Science students, we wanted to build a practical, real-world application that could be genuinely useful. We saw an opportunity to create a modern, ad-free quiz platform that we and our peers would actually want to use.
+                            ParikshaNode started as a **final year project at GNIOT, Greater Noida**. As Computer Science students, we wanted to build a practical, real-world application that could be genuinely useful. We saw an opportunity to create a modern, ad-free <Link to="/" className="font-semibold text-primary hover:underline">quiz platform</Link> that we and our peers would actually want to use.
                         </p>
                         <p className="text-lg text-muted-foreground font-semibold border-l-4 border-primary pl-4 py-1 bg-secondary/50">
-                            This app is the culmination of our collective skills in **full-stack MERN development** and UI/UX design, representing countless hours of coding and collaboration from our 2022-2026 batch.
+                            This app is the culmination of our collective skills in **full-stack MERN development** and UI/UX design, representing countless hours of coding and collaboration from our 2022-2026 batch. You can support our continuous hosting effort on our <Link to="/donate" className="font-semibold text-primary hover:underline">Support Page</Link>.
                         </p>
                     </div>
                     <div className="w-full rounded-2xl overflow-hidden border border-border/50 shadow-2xl shadow-primary/30 
@@ -178,10 +179,10 @@ const AboutPage = () => {
 
                 <hr className="border-t-2 border-primary/20 opacity-30" />
 
-                {/* Our Technology Section - Animated Grid */}
+                {/* Our Technology Section - Internal Link added here */}
                 <section className="text-center pb-12">
                     <h3 className="text-4xl font-bold tracking-tight text-foreground/90 animate-in fade-in duration-700 delay-500">Built with Modern Technology</h3>
-                    <p className="mt-2 text-lg text-muted-foreground animate-in fade-in duration-700 delay-600">We use a powerful and scalable MERN stack to deliver a seamless experience.</p>
+                    <p className="mt-2 text-lg text-muted-foreground animate-in fade-in duration-700 delay-600">Our powerful MERN stack is designed for a seamless, <Link to="/" className="font-semibold text-primary hover:underline">high-performance quizzing experience</Link>.</p>
                     <div className="max-w-3xl mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
                         
                         {/* MongoDB */}
