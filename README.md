@@ -42,12 +42,12 @@ ParikshaNode is packed with features for both **users** and **admins**:
 
 ---
 ## All Public Urls
-https://parikshanode.netlify.app/login
-https://parikshanode.netlify.app/about
-https://parikshanode.netlify.app/contact
-https://parikshanode.netlify.app/donate
-https://parikshanode.netlify.app/
-https://parikshanode.netlify.app/register
+- https://parikshanode.netlify.app/login
+- https://parikshanode.netlify.app/about
+- https://parikshanode.netlify.app/contact
+- https://parikshanode.netlify.app/donate
+- https://parikshanode.netlify.app/
+- https://parikshanode.netlify.app/register
 
 ## 🚀 Getting Started  
 
