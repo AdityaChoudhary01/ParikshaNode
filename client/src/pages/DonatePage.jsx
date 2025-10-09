@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // 👈 Import Link for internal linking
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Coffee, Globe, Lightbulb, ShieldBan, Tag } from 'lucide-react'; 
@@ -62,9 +63,9 @@ const DonatePage = () => {
                                      bg-gradient-to-r from-primary to-destructive drop-shadow-lg">
                         Become a ParikshaNode Supporter
                     </h1>
-                    {/* H2 for secondary descriptive heading */}
+                    {/* H2 for secondary descriptive heading - Internal Links added here */}
                     <h2 className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
-                        ParikshaNode is a community-driven project. Your contribution, no matter the size, fuels our growth and commitment to keeping education **ad-free.**
+                        ParikshaNode is a community-driven project dedicated to <Link to="/" className="font-semibold text-primary hover:underline">ad-free education</Link>. Your contribution, no matter the size, fuels our growth and commitment. Learn more <Link to="/about" className="font-semibold text-primary hover:underline">about the development team</Link> or <Link to="/contact" className="font-semibold text-primary hover:underline">contact us</Link> with questions.
                     </h2>
                 </div>
 
