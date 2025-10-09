@@ -84,7 +84,7 @@ const AboutPage = () => {
                 <title>Meet the Team | ParikshaNode - MERN Stack Quiz Project</title>
                 <meta 
                     name="description" 
-                    content="Learn about the four final year B.Tech CSE students (Aditya, Suraj, Amrita, Sachin) from GNIOT who developed ParikshaNode, a full-stack MERN quiz platform project." 
+                    content=" ParikshaNode , Learn about the four final year B.Tech CSE students (Aditya, Suraj, Amrita, Sachin) from GNIOT who developed ParikshaNode, a full-stack MERN quiz platform project." 
                 />
                 <link rel="canonical" href={ABOUT_URL} />
                 
@@ -217,3 +217,4 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+
