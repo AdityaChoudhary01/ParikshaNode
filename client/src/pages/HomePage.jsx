@@ -19,7 +19,7 @@ const SITE_NAME = "ParikshaNode";
 const SITE_URL = "https://parikshanode.netlify.app/";
 const LOGO_URL = "https://parikshanode.netlify.app/logo.png";
 const MAIN_TITLE = `${SITE_NAME} | Master Any Subject, One Quiz at a Time`;
-const MAIN_DESCRIPTION = "ParikshaNode: The next-gen, ad-free MERN quiz platform. Create, share, and challenge yourself with thousands of expert quizzes, track deep analytics, and join live battles.";
+const MAIN_DESCRIPTION = "ParikshaNode is the ultimate MERN quiz platform for students and pros. Create quizzes, track deep analytics, and join ad-free live battles.";
 // --- START: useDebounce Hook Definition (Preserved) ---
 const useDebounce = (value, delay) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -509,5 +509,6 @@ const QuizCard = ({ quiz, hasAttempted, resultId, user, index }) => {
 };
 
 export default HomePage;
+
 
 
