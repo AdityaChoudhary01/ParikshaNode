@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // 👈 IMPORT Link for internal linking
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import api from '@/api/axiosConfig';
@@ -15,21 +16,33 @@ const SITE_NAME = "ParikshaNode";
 const SITE_URL = "https://parikshanode.netlify.app/"; // IMPORTANT: Replace with your live domain
 const CONTACT_URL = `${SITE_URL}contact`;
 const SUPPORT_EMAIL = "aadiwrld01@gmail.com";
-const SUPPORT_PHONE = "+91 12345 67890"; // Use E.164 format if possible, but keeping your format for now.
+const SUPPORT_PHONE = "+91 12345 67890"; 
 
 // --- FAQ Data for Schema Markup ---
 const faqData = [
     {
         question: "How do I create a quiz?",
-        answer: "To create a quiz, you must have an admin account. Once logged in as an admin, navigate to the Admin Dashboard and select \"Manage Quizzes\" to find the \"Create New Quiz\" button. (Note: Non-admin users can use the 'Generate with AI' feature on the New Quiz page.)"
+        answer: (
+            <>
+                To create a quiz, you must have an admin account. Once logged in as an admin, navigate to the <Link to="/admin" className="font-semibold text-primary hover:underline">Admin Dashboard</Link> and select "Manage Quizzes" to find the "Create New Quiz" button. (Note: Non-admin users can use the 'Generate with AI' feature on the New Quiz page.)
+            </>
+        )
     },
     {
         question: "Is ParikshaNode free to use?",
-        answer: "Yes, ParikshaNode is completely free for all users. We are supported by donations from our community, which you can make on our \"Donate\" page."
+        answer: (
+            <>
+                Yes, ParikshaNode is completely free for all users. We are supported by donations from our community, which you can make on our <Link to="/donate" className="font-semibold text-primary hover:underline">Donation Page</Link>.
+            </>
+        )
     },
     {
         question: "How is my score calculated?",
-        answer: "Your score is calculated based on the number of questions you answer correctly. The results page provides a detailed breakdown of your performance after each quiz."
+        answer: (
+            <>
+                Your score is calculated based on the number of questions you answer correctly. The <Link to="/history" className="font-semibold text-primary hover:underline">results page</Link> provides a detailed breakdown of your performance after each quiz.
+            </>
+        )
     }
 ];
 
@@ -47,20 +60,30 @@ const schemaMarkup = {
                 "telephone": SUPPORT_PHONE,
                 "contactType": "customer service",
                 "email": SUPPORT_EMAIL,
-                "areaServed": "IN" // Set this to your primary area of service or use "World"
+                "areaServed": "IN" 
             }
         },
         {
-            // FAQPage Schema for Rich Snippets (to show questions directly in Google results)
+            // FAQPage Schema for Rich Snippets (Note: Text content passed to schema should ideally be plain text)
             "@type": "FAQPage",
-            "mainEntity": faqData.map(item => ({
-                "@type": "Question",
-                "name": item.question,
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": item.answer
+            "mainEntity": [
+                // Manually mapping to plain text for schema accuracy
+                {
+                    "@type": "Question",
+                    "name": faqData[0].question,
+                    "acceptedAnswer": { "@type": "Answer", "text": "To create a quiz, you must have an admin account. Once logged in as an admin, navigate to the Admin Dashboard and select \"Manage Quizzes\" to find the \"Create New Quiz\" button." }
+                },
+                {
+                    "@type": "Question",
+                    "name": faqData[1].question,
+                    "acceptedAnswer": { "@type": "Answer", "text": "Yes, ParikshaNode is completely free for all users. We are supported by donations from our community, which you can make on our Donation page." }
+                },
+                {
+                    "@type": "Question",
+                    "name": faqData[2].question,
+                    "acceptedAnswer": { "@type": "Answer", "text": "Your score is calculated based on the number of questions you answer correctly. The results page provides a detailed breakdown of your performance after each quiz." }
                 }
-            }))
+            ]
         }
     ]
 };
@@ -113,9 +136,9 @@ const ContactPage = () => {
                                  bg-gradient-to-r from-primary to-destructive drop-shadow-lg">
                     Have a Question? Let's Connect
                 </h1>
-                {/* H2 for secondary descriptive heading */}
+                {/* H2 for secondary descriptive heading - Includes internal links */}
                 <h2 className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
-                    We're here to help and answer any question you might have about our platform or project.
+                    We're here to help and answer any question you might have. You can also <Link to="/" className="font-semibold text-primary hover:underline">explore our quizzes</Link> or support the project on our <Link to="/donate" className="font-semibold text-primary hover:underline">donation page</Link>.
                 </h2>
             </div>
 
@@ -151,7 +174,7 @@ const ContactPage = () => {
                         </CardContent>
                     </Card>
                     
-                    {/* FAQ Section - Enhanced Accordion */}
+                    {/* FAQ Section - Anchor text links added in FAQ answers */}
                     <Card className="shadow-xl border-primary/30 hover:border-primary transition-all duration-300">
                         <CardHeader><CardTitle className="text-2xl text-primary/90">Frequently Asked Questions</CardTitle></CardHeader>
                         <CardContent>
