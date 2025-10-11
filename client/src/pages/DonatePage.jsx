@@ -135,7 +135,7 @@ const DonatePage = () => {
                         <CardContent className="text-center flex flex-col items-center">
                             {/* Developer Profile Image - Size adjusted for all screens */}
                             <img 
-                                src="https://cdn.buymeacoffee.com/uploads/profile_pictures/2025/07/ZzlkIXLPpwCOJfAo.jpg@300w_0e.webp" 
+                                src="https://cdn.buymeacoffee.com/uploads/profile_pictures/2025/10/y9sYfqwudI0b0PV0.jpg@300w_0e.webp" 
                                 alt={`Profile picture of ${DEVELOPER_NAME}`} 
                                 className="w-24 h-24 sm:w-32 sm:h-32 rounded-full mb-4 border-6 border-destructive ring-4 ring-destructive/50 shadow-xl" 
                             />
@@ -196,3 +196,4 @@ const DonatePage = () => {
 };
 
 export default DonatePage;
+
