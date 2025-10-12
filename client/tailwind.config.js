@@ -58,6 +58,7 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        // Existing keyframes for shadcn/ui
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -66,10 +67,34 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        
+        // --- ADDED FOR ULTRA MODERN EFFECT ---
+        "blob": {
+            "0%": {
+                transform: "translate(0px, 0px) scale(1)",
+            },
+            "33%": {
+                transform: "translate(30px, -50px) scale(1.1)",
+            },
+            "66%": {
+                transform: "translate(-20px, 20px) scale(0.9)",
+            },
+            "100%": {
+                transform: "translate(0px, 0px) scale(1)",
+            },
+        },
+        // ------------------------------------
       },
       animation: {
+        // Existing animations for shadcn/ui
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+
+        // --- ADDED FOR ULTRA MODERN EFFECT ---
+        'blob-one': 'blob 10s infinite ease-in-out',
+        'blob-two': 'blob 12s infinite reverse ease-in-out',
+        'spin-slow': 'spin 5s linear infinite', // Tailwind's 'spin' utility is often available, but defining the animation duration makes it slow.
+        // ------------------------------------
       },
     },
   },
