@@ -559,7 +559,7 @@ const HomePage = () => {
                                 className="h-16 px-8 text-xl rounded-full bg-gradient-to-r from-destructive/90 to-red-600/90 shadow-2xl shadow-destructive/80 hover:shadow-destructive/90 transition-all duration-500 hover:scale-[1.05] ring-4 ring-destructive/30"
                             >
                                 <Download className="h-6 w-6 mr-3 animate-bounce" />
-                                GET THE APP
+                                Apk
                             </UltraButton>
                         </a>
                     </div>
@@ -670,3 +670,4 @@ const QuizCard = ({ quiz, hasAttempted, resultId, user, index, isRecommended }) 
 };
 
 export default HomePage;
+
