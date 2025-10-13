@@ -458,82 +458,120 @@ const HomePage = () => {
 
                 <hr className="border-t-4 border-primary/40 opacity-50 shadow-[0_0_15px_var(--tw-color-primary)]" />
 
-                {/* --- Why Choose Section (Modular Floating Cards - ENHANCED) --- */}
-                <section className="text-center py-10 animate-in fade-in duration-1000 px-3 md:px-4"> {/* FIX: Adjusted px-4 to px-3 for mobile */}
-                    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-destructive inline-block drop-shadow-md">
-                        Why Choose ParikshaNode?
-                    </h2>
-                    <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">Layered features for serious knowledge enhancement.</p>
-                    <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-                        {/* Feature 1: Curated Library (Holographic Card) */}
-                        <Card className="flex flex-col items-center p-8 rounded-[2.5rem] bg-card/70 border-2 border-primary/40 backdrop-blur-md
-                                     shadow-[0_20px_40px_rgba(var(--primary-rgb),0.5)] hover:shadow-[0_30px_60px_rgba(var(--primary-rgb),0.8)]
-                                     transition-all duration-300 hover:scale-[1.03] animate-in slide-in-from-bottom-8 delay-100">
-                            <div className="p-6 rounded-full bg-primary/30 shadow-2xl ring-4 ring-primary/20 [filter:drop-shadow(0_0_15px_var(--tw-color-primary))]">
-                                <BookOpen className="w-12 h-12 text-primary drop-shadow-lg" />
-                            </div>
-                            <CardTitle className="text-2xl font-black mt-6 text-foreground/95">Curated Library</CardTitle>
-                            <CardContent className="mt-3 text-muted-foreground text-base">
-                                <p>Access thousands of expert-vetted quizzes across all major disciplines.</p>
-                            </CardContent>
-                        </Card>
-                        {/* Feature 2: Create & Share (Holographic Card) */}
-                        <Card className="flex flex-col items-center p-8 rounded-[2.5rem] bg-card/70 border-2 border-destructive/40 backdrop-blur-md
-                                     shadow-[0_20px_40px_rgba(var(--destructive-rgb),0.5)] hover:shadow-[0_30px_60px_rgba(var(--destructive-rgb),0.8)]
-                                     transition-all duration-300 hover:scale-[1.03] animate-in slide-in-from-bottom-8 delay-200">
-                            <CardHeader className="p-0 items-center">
-                                <div className="p-6 rounded-full bg-destructive/30 shadow-2xl ring-4 ring-destructive/20 [filter:drop-shadow(0_0_15px_var(--tw-color-destructive))]">
-                                    <LayoutDashboard className="w-12 h-12 text-destructive drop-shadow-lg" />
-                                </div>
-                                <CardTitle className="text-2xl font-black mt-6 text-foreground/95">Create & Share</CardTitle>
-                            </CardHeader>
-                            <CardContent className="mt-3 text-muted-foreground text-base">
-                                <p>Any user can easily create and share quizzes with a unique link, including live sessions.</p>
-                            </CardContent>
-                        </Card>
-                        {/* Feature 3: Real-time Analytics (Holographic Card) */}
-                        <Card className="flex flex-col items-center p-8 rounded-[2.5rem] bg-card/70 border-2 border-primary/40 backdrop-blur-md
-                                     shadow-[0_20px_40px_rgba(var(--primary-rgb),0.5)] hover:shadow-[0_30px_60px_rgba(var(--primary-rgb),0.8)]
-                                     transition-all duration-300 hover:scale-[1.03] animate-in slide-in-from-bottom-8 delay-300">
-                            <div className="p-6 rounded-full bg-primary/30 shadow-2xl ring-4 ring-primary/20 [filter:drop-shadow(0_0_15px_var(--tw-color-primary))]">
-                                <BarChart className="w-12 h-12 text-primary drop-shadow-lg" />
-                            </div>
-                            <CardTitle className="text-2xl font-black mt-6 text-foreground/95">Deep Metrics</CardTitle>
-                            <CardContent className="mt-3 text-muted-foreground text-base">
-                                <p>Visualize your progress, identify weaknesses, earn achievements, and review answers in detail.</p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </section>
+              {/* 🌟 WHY CHOOSE PARIKSHANODE — Next-Gen Modular Layout */}
+<section className="relative py-24 px-6 text-center overflow-hidden">
+  {/* Ambient gradient layer */}
+  <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--primary-rgb),0.12),transparent_70%)]" />
+  
+  <div className="max-w-6xl mx-auto">
+    <h2 className="text-4xl md:text-5xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary via-foreground to-destructive drop-shadow-[0_0_25px_rgba(var(--primary-rgb),0.5)]">
+      Why ParikshaNode?
+    </h2>
+    <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+      Built for learners who crave depth, connection, and measurable growth.
+    </p>
 
-                <hr className="border-t-4 border-primary/40 opacity-50 shadow-[0_0_15px_var(--tw-color-primary)]" />
+    {/* Floating grid of feature cards */}
+    <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
+      {/* 🔹 Smart Library */}
+      <Card className="group relative p-10 rounded-[2rem] bg-card/60 border border-primary/30 backdrop-blur-xl
+                       shadow-[0_0_40px_rgba(var(--primary-rgb),0.25)] hover:shadow-[0_0_60px_rgba(var(--primary-rgb),0.4)]
+                       transition-all duration-500 hover:-translate-y-2">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br from-primary to-destructive transition-opacity duration-700 rounded-[2rem]" />
+        <div className="p-6 rounded-full bg-primary/20 ring-2 ring-primary/30">
+          <BookOpen className="w-12 h-12 text-primary drop-shadow-md" />
+        </div>
+        <CardTitle className="text-2xl font-bold mt-6 text-foreground">Smart Library</CardTitle>
+        <CardContent className="mt-3 text-muted-foreground text-base leading-relaxed">
+          <p>Access expertly curated quizzes, tailored by AI for every skill level and subject domain.</p>
+        </CardContent>
+      </Card>
 
-                {/* --- How It Works Section (ENHANCED) --- */}
-                <section className="text-center py-10 animate-in fade-in duration-1000 px-3 md:px-4"> {/* FIX: Adjusted px-4 to px-3 for mobile */}
-                    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-12 bg-clip-text text-transparent bg-gradient-to-r from-destructive to-primary inline-block drop-shadow-md">
-                        Mastery in <span className='text-5xl md:text-6xl'>3</span> Rapid Steps
-                    </h2>
-                    <div className="mt-12 grid md:grid-cols-3 gap-8 md:gap-12">
-                        {/* Step 1 (Glowing Numbers) */}
-                        <div className="flex flex-col items-center animate-in zoom-in duration-700 delay-100 p-8 rounded-[2rem] bg-card/80 border-2 border-primary/20 shadow-3xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-300">
-                            <div className="text-6xl font-black text-white bg-clip-text bg-gradient-to-br from-primary to-destructive w-24 h-24 flex items-center justify-center rounded-full mb-6 border-4 border-primary/70 shadow-2xl shadow-primary/60 ring-4 ring-primary/20 [text-shadow:0_0_15px_var(--tw-color-primary)]">1</div>
-                            <h3 className="text-2xl font-bold mt-4 text-foreground/95">Browse & Discover</h3>
-                            <p className="text-muted-foreground mt-2 max-w-xs text-base">Explore our massive, dynamic library of quizzes using advanced filtering.</p>
-                        </div>
-                        {/* Step 2 */}
-                        <div className="flex flex-col items-center animate-in zoom-in duration-700 delay-200 p-8 rounded-[2rem] bg-card/80 border-2 border-primary/20 shadow-3xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-300">
-                            <div className="text-6xl font-black text-white bg-clip-text bg-gradient-to-br from-primary to-destructive w-24 h-24 flex items-center justify-center rounded-full mb-6 border-4 border-primary/70 shadow-2xl shadow-primary/60 ring-4 ring-primary/20 [text-shadow:0_0_15px_var(--tw-color-primary)]">2</div>
-                            <h3 className="text-2xl font-bold mt-4 text-foreground/95">Engage in Quizzes</h3>
-                            <p className="text-muted-foreground mt-2 max-w-xs text-base">Take the challenge with timed, responsive single-player or real-time multiplayer modes.</p>
-                        </div>
-                        {/* Step 3 */}
-                        <div className="flex flex-col items-center animate-in zoom-in duration-700 delay-300 p-8 rounded-[2rem] bg-card/80 border-2 border-primary/20 shadow-3xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-300">
-                            <div className="text-6xl font-black text-white bg-clip-text bg-gradient-to-br from-primary to-destructive w-24 h-24 flex items-center justify-center rounded-full mb-6 border-4 border-primary/70 shadow-2xl shadow-primary/60 ring-4 ring-primary/20 [text-shadow:0_0_15px_var(--tw-color-primary)]">3</div>
-                            <h3 className="text-2xl font-bold mt-4 text-foreground/95">Achieve & Track</h3>
-                            <p className="text-muted-foreground mt-2 max-w-xs text-base">Review answers, earn exclusive achievements, and climb the global leaderboards.</p>
-                        </div>
-                    </div>
-                </section>
+      {/* 🔹 Create, Share, Compete */}
+      <Card className="group relative p-10 rounded-[2rem] bg-card/60 border border-destructive/30 backdrop-blur-xl
+                       shadow-[0_0_40px_rgba(var(--destructive-rgb),0.25)] hover:shadow-[0_0_60px_rgba(var(--destructive-rgb),0.4)]
+                       transition-all duration-500 hover:-translate-y-2">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br from-destructive to-primary transition-opacity duration-700 rounded-[2rem]" />
+        <div className="p-6 rounded-full bg-destructive/20 ring-2 ring-destructive/30">
+          <LayoutDashboard className="w-12 h-12 text-destructive drop-shadow-md" />
+        </div>
+        <CardTitle className="text-2xl font-bold mt-6 text-foreground">Create, Share & Compete</CardTitle>
+        <CardContent className="mt-3 text-muted-foreground text-base leading-relaxed">
+          <p>Host live multiplayer quizzes, share instant challenge links, and collaborate with your peers effortlessly.</p>
+        </CardContent>
+      </Card>
+
+      {/* 🔹 Deep Insights */}
+      <Card className="group relative p-10 rounded-[2rem] bg-card/60 border border-primary/30 backdrop-blur-xl
+                       shadow-[0_0_40px_rgba(var(--primary-rgb),0.25)] hover:shadow-[0_0_60px_rgba(var(--primary-rgb),0.4)]
+                       transition-all duration-500 hover:-translate-y-2">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br from-primary to-destructive transition-opacity duration-700 rounded-[2rem]" />
+        <div className="p-6 rounded-full bg-primary/20 ring-2 ring-primary/30">
+          <BarChart className="w-12 h-12 text-primary drop-shadow-md" />
+        </div>
+        <CardTitle className="text-2xl font-bold mt-6 text-foreground">Deep Analytics</CardTitle>
+        <CardContent className="mt-3 text-muted-foreground text-base leading-relaxed">
+          <p>Track growth with precision — progress graphs, achievement heatmaps, and trend predictions.</p>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</section>
+
+{/* Divider with glow */}
+<hr className="my-20 border-t border-primary/40 opacity-50 shadow-[0_0_25px_rgba(var(--primary-rgb),0.4)]" />
+
+{/* ⚙️ HOW IT WORKS - Streamlined Flow */}
+<section className="relative py-24 px-6 text-center overflow-hidden">
+  <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_100%,rgba(var(--destructive-rgb),0.12),transparent_70%)]" />
+
+  <div className="max-w-6xl mx-auto">
+    <h2 className="text-4xl md:text-5xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-destructive to-primary drop-shadow-[0_0_25px_rgba(var(--primary-rgb),0.4)]">
+      Mastery in <span className="text-6xl font-black">3</span> Simple Steps
+    </h2>
+
+    <div className="mt-16 grid md:grid-cols-3 gap-10 md:gap-12">
+      {/* Step 1 */}
+      <div className="relative flex flex-col items-center p-10 rounded-[2rem] bg-card/60 border border-primary/30 backdrop-blur-xl
+                      hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.4)]">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 flex items-center justify-center rounded-full 
+                        bg-gradient-to-br from-primary to-destructive text-white text-3xl font-black shadow-xl">
+          1
+        </div>
+        <h3 className="mt-12 text-2xl font-bold text-foreground">Browse & Discover</h3>
+        <p className="mt-3 text-base text-muted-foreground max-w-xs">
+          Search across adaptive quizzes powered by intelligent tagging and recommendation systems.
+        </p>
+      </div>
+
+      {/* Step 2 */}
+      <div className="relative flex flex-col items-center p-10 rounded-[2rem] bg-card/60 border border-primary/30 backdrop-blur-xl
+                      hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.4)]">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 flex items-center justify-center rounded-full 
+                        bg-gradient-to-br from-primary to-destructive text-white text-3xl font-black shadow-xl">
+          2
+        </div>
+        <h3 className="mt-12 text-2xl font-bold text-foreground">Play & Engage</h3>
+        <p className="mt-3 text-base text-muted-foreground max-w-xs">
+          Jump into interactive quiz sessions — solo or multiplayer — with live feedback and streaks.
+        </p>
+      </div>
+
+      {/* Step 3 */}
+      <div className="relative flex flex-col items-center p-10 rounded-[2rem] bg-card/60 border border-primary/30 backdrop-blur-xl
+                      hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.4)]">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 flex items-center justify-center rounded-full 
+                        bg-gradient-to-br from-primary to-destructive text-white text-3xl font-black shadow-xl">
+          3
+        </div>
+        <h3 className="mt-12 text-2xl font-bold text-foreground">Analyze & Grow</h3>
+        <p className="mt-3 text-base text-muted-foreground max-w-xs">
+          Visualize learning patterns, gain insights from analytics, and celebrate mastery milestones.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
             </div>
 
