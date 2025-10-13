@@ -255,13 +255,13 @@ const HomePage = () => {
                   </p>
 
                   {/* 🏆 Hero Title */}
-                  <h1
-                    className="text-[clamp(3.5rem,8vw,10rem)] font-black tracking-tighter leading-none mb-4
-                               bg-clip-text text-transparent 
-                               [text-shadow:0_0_60px_rgba(255,255,255,0.7),_0_10px_150px_rgba(var(--primary-rgb),0.9)]"
-                  >
-                    MASTERY
-                  </h1>
+                   <h1
+      className="text-[clamp(3.5rem,8vw,10rem)] font-black tracking-tighter leading-none mb-4
+                 text-white bg-clip-text 
+                 [text-shadow:0_0_60px_rgba(255,255,255,0.7),_0_10px_150px_rgba(var(--primary-rgb),0.9)]"
+    >
+      MASTERY
+    </h1>
 
                   {/* ✨ Subtitle */}
                   <h2
