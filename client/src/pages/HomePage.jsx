@@ -227,112 +227,116 @@ const HomePage = () => {
             {/* Background Enhancement for Depth */}
             {/* FIX: Added px-0 to the container to eliminate default 1rem mobile padding */}
             <div className="space-y-24 md:space-y-32 container px-0 py-4 md:py-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-color-background)_60%,_var(--tw-color-primary)/10)] min-h-screen">
-                {/* 🚀 Hero Section - MAX VISUAL DRAMA */}
-              <section
-                  className="relative overflow-hidden text-center py-24 md:py-48 
-                             rounded-[2.5rem] sm:rounded-[4rem] bg-card/70 backdrop-blur-[30px]
-                             border-4 border-primary/60 shadow-[0_40px_150px_-30px_rgba(var(--primary-rgb),0.9),_0_0_200px_rgba(var(--primary-rgb),0.3)]
-                             transition-all duration-700"
-              >
-                {/* 🌌 Animated Ambient Background */}
-                <div className="absolute inset-0 z-0">
-                  <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_30%,_rgba(var(--primary-rgb),0.6),_transparent_60%)] animate-pulse-slow"></div>
-                  <div className="absolute w-[150%] h-[150%] -top-[25%] -left-[25%] bg-[conic-gradient(from_0deg,_rgba(var(--primary-rgb),0.1),_transparent_50%,_rgba(var(--destructive-rgb),0.15)_90%)] animate-spin-slow"></div>
-                </div>
+              {/* 🚀 Ultra-Modern Hero Section */}
+<section
+  className="relative overflow-hidden flex flex-col items-center justify-center text-center py-32 md:py-56
+             rounded-[3rem] bg-gradient-to-br from-background/80 via-background/60 to-background/80
+             border border-primary/40 backdrop-blur-[60px]
+             shadow-[0_0_120px_-30px_rgba(var(--primary-rgb),0.6)]
+             transition-all duration-700 hover:shadow-[0_0_180px_-40px_rgba(var(--primary-rgb),0.8)]"
+>
+  {/* 🌌 Ambient Layers */}
+  <div className="absolute inset-0 -z-10">
+    {/* Dynamic radial light */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(var(--primary-rgb),0.25),transparent_60%)] animate-pulse-slow"></div>
+    
+    {/* Animated gradient swirl */}
+    <div className="absolute w-[180%] h-[180%] -top-[40%] -left-[40%]
+                    bg-[conic-gradient(from_90deg,rgba(var(--primary-rgb),0.15),transparent_40%,rgba(var(--destructive-rgb),0.25)_80%)]
+                    animate-spin-slower opacity-70"></div>
 
-                {/* 🌠 Foreground Content */}
-                {/* FIX: Changed px-6 to px-4 for slightly reduced inner padding */}
-                <div className="relative z-10 px-4 sm:px-6 animate-in fade-in slide-in-from-top-10 duration-900">
+    {/* Noise overlay for texture */}
+    <div className="absolute inset-0 bg-[url('/path-to-subtle-noise-texture.svg')] opacity-10"></div>
+  </div>
 
-                  {/* 🪶 Intro Text */}
-                  <p
-                    className="text-[clamp(1.25rem,2vw,2rem)] md:text-[clamp(2rem,3vw,3rem)] 
-                               font-extrabold uppercase tracking-[0.75rem] sm:tracking-[1rem] mb-10
-                               bg-gradient-to-r from-primary via-destructive to-primary bg-clip-text text-transparent
-                               drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.4)]"
-                  >
-                    P A R I K S H A N O D E
-                  </p>
+  {/* ✨ Content */}
+  <div className="relative z-10 max-w-6xl px-6 animate-in fade-in-100 duration-1000 ease-out">
+    
+    {/* Brand line */}
+    <p className="uppercase tracking-[0.9rem] sm:tracking-[1.2rem] font-extrabold mb-8 
+                 text-[clamp(1.25rem,2vw,2rem)] bg-gradient-to-r from-primary/90 to-destructive/80 
+                 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.9)]">
+      PARIKSHANODE
+    </p>
 
-                  {/* 🏆 Hero Title */}
-                   <h1
-      className="text-[clamp(3.5rem,8vw,10rem)] font-black tracking-tighter leading-none mb-4
-                 text-white bg-clip-text 
-                 [text-shadow:0_0_60px_rgba(255,255,255,0.7),_0_10px_150px_rgba(var(--primary-rgb),0.9)]"
-    >
+    {/* Main Heading */}
+    <h1 className="text-[clamp(4rem,9vw,11rem)] font-black leading-none 
+                   text-transparent bg-clip-text bg-gradient-to-r from-primary via-foreground to-destructive
+                   [text-shadow:0_0_70px_rgba(var(--primary-rgb),1.1)]
+                   animate-in fade-in slide-in-from-top-6 duration-700">
       MASTERY
     </h1>
 
-                  {/* ✨ Subtitle */}
-                  <h2
-                    className="text-[clamp(2rem,4vw,5rem)] font-black tracking-tight 
-                               text-transparent bg-clip-text bg-gradient-to-r from-primary to-destructive 
-                               [text-shadow:0_0_25px_rgba(var(--destructive-rgb),0.6)]"
-                  >
-                    UNLOCKED.
-                  </h2>
+    {/* Subheading */}
+    <h2 className="mt-2 text-[clamp(2.25rem,5vw,6rem)] font-extrabold bg-gradient-to-r from-destructive to-primary
+                   bg-clip-text text-transparent opacity-90 animate-in fade-in slide-in-from-bottom-4 delay-150">
+      UNLOCKED
+    </h2>
 
-                  {/* 💬 Description */}
-                  <p
-                    className="mt-10 sm:mt-14 text-[clamp(1.125rem,1.6vw,1.75rem)] text-foreground/90 
-                               font-medium max-w-5xl mx-auto tracking-wide opacity-95
-                               animate-in fade-in duration-1000 delay-300
-                               [text-shadow:0_0_5px_rgba(0,0,0,0.4)]"
-                  >
-                    The next generation quiz platform: <strong>Sculpt your learning path</strong> with live multiplayer,
-                    deep analytics, and instant content creation.
-                  </p>
+    {/* Supporting Text */}
+    <p className="mt-10 text-[clamp(1.1rem,1.6vw,1.6rem)] text-foreground/90 max-w-3xl mx-auto font-medium leading-relaxed 
+                 [text-shadow:0_0_10px_rgba(0,0,0,0.6)] animate-in fade-in delay-300">
+      Experience the next era of learning — live multiplayer quizzes, real-time analytics, and AI-assisted mastery tracking.
+    </p>
 
-                  {/* 🚀 CTA Buttons */}
-                  <div className="mt-16 flex flex-col sm:flex-row justify-center gap-6 sm:gap-10 max-w-xl mx-auto">
-                    <UltraButton
-                      size="xl"
-                      onClick={handleBrowseClick}
-                      className="w-full sm:w-auto hover:scale-105 transition-transform duration-300"
-                    >
-                      <Zap className="w-6 h-6 mr-3 animate-pulse" />
-                      Challenge Yourself
-                    </UltraButton>
+    {/* 🧭 Call To Action */}
+    <div className="mt-16 flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 animate-in fade-in delay-500">
+      <UltraButton
+        size="xl"
+        onClick={handleBrowseClick}
+        className="group relative overflow-hidden px-10 py-5 text-lg font-semibold
+                   hover:scale-[1.08] transition-transform duration-300
+                   shadow-[0_0_25px_rgba(var(--primary-rgb),0.7)]
+                   hover:shadow-[0_0_45px_rgba(var(--primary-rgb),1)]
+                   before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/50 before:to-destructive/50 before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-500 rounded-2xl"
+      >
+        <Zap className="w-6 h-6 mr-2 animate-wiggle text-primary" />
+        Challenge Yourself
+      </UltraButton>
 
-                    {user ? (
-                      user.role === 'admin' ? (
-                        <Link to="/admin" className="w-full sm:w-auto">
-                          <UltraButton
-                            size="xl"
-                            variant="outline"
-                            className="w-full text-base sm:text-xl hover:scale-105 transition-transform duration-300"
-                          >
-                            <LayoutDashboard className="w-6 h-6 mr-2 text-primary" />
-                            Admin Dashboard
-                          </UltraButton>
-                        </Link>
-                      ) : (
-                        <Link to="/history" className="w-full sm:w-auto">
-                          <UltraButton
-                            size="xl"
-                            variant="outline"
-                            className="w-full text-base sm:text-xl hover:scale-105 transition-transform duration-300"
-                          >
-                            <Clock className="w-6 h-6 mr-2 text-primary" />
-                            My History Hub
-                          </UltraButton>
-                        </Link>
-                      )
-                    ) : (
-                      <Link to="/register" className="w-full sm:w-auto">
-                        <UltraButton
-                          size="xl"
-                          variant="destructive"
-                          className="w-full text-base sm:text-xl hover:scale-105 transition-transform duration-300"
-                        >
-                          <HeartHandshake className="w-6 h-6 mr-2" />
-                          Join the Network
-                        </UltraButton>
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </section>
+      {user ? (
+        user.role === 'admin' ? (
+          <Link to="/admin">
+            <UltraButton
+              size="xl"
+              variant="outline"
+              className="hover:scale-[1.08] transition-all duration-300 shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)]"
+            >
+              <LayoutDashboard className="w-6 h-6 mr-2 text-primary" />
+              Admin Dashboard
+            </UltraButton>
+          </Link>
+        ) : (
+          <Link to="/history">
+            <UltraButton
+              size="xl"
+              variant="outline"
+              className="hover:scale-[1.08] transition-all duration-300 shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)]"
+            >
+              <Clock className="w-6 h-6 mr-2 text-primary" />
+              My History Hub
+            </UltraButton>
+          </Link>
+        )
+      ) : (
+        <Link to="/register">
+          <UltraButton
+            size="xl"
+            variant="destructive"
+            className="hover:scale-[1.08] transition-transform duration-300 shadow-[0_0_25px_rgba(var(--destructive-rgb),0.7)] hover:shadow-[0_0_45px_rgba(var(--destructive-rgb),1)]"
+          >
+            <HeartHandshake className="w-6 h-6 mr-2" />
+            Join the Network
+          </UltraButton>
+        </Link>
+      )}
+    </div>
+  </div>
+
+  {/* Floating glow orbs */}
+  <div className="absolute -top-20 left-10 w-64 h-64 bg-primary/30 rounded-full blur-3xl animate-pulse-slow"></div>
+  <div className="absolute bottom-0 right-20 w-72 h-72 bg-destructive/25 rounded-full blur-3xl animate-bounce-slow"></div>
+</section>
 
 
                 {/* --- 🌟 Recommended for You Section (Modular Tiles - ENHANCED) --- */}
