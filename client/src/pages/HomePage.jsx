@@ -183,46 +183,81 @@ const HomePage = () => {
         setShowApkButton(false);
     };
 
-    // --- SEO: JSON-LD Structured Data Schema (Preserved) ---
-    const schemaMarkup = {
-        "@context": "https://schema.org",
-        "@graph": [
-           {
-                "@type": "WebSite",
-                "name": SITE_NAME,
-                "url": SITE_URL,
-                "description": MAIN_DESCRIPTION
-            },
-            {
-                "@type": "Organization",
-                "name": SITE_NAME,
-                "url": SITE_URL,
-                "logo": LOGO_URL,
-                "sameAs": [
-                    "https://github.com/AdityaChoudhary01/ParikshaNode", 
-                     "https://www.instagram.com/aditya_choudhary__021/",
-                    "https://www.linkedin.com/in/aditya-kumar-38093a304/"
-                ]
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@graph": [
+        // 1. WebSite Schema (The strongest signal for the Site Name in Google Search)
+        {
+            "@type": "WebSite",
+            "name": SITE_NAME,
+            "url": SITE_URL,
+            "description": MAIN_DESCRIPTION,
+            // Adds support for the Sitelinks Searchbox in Google
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": `${SITE_URL}search?q={search_term_string}`,
+                "query-input": "required name=search_term_string"
             }
-        ]
-    };
+        },
+        
+        // 2. WebApplication Schema (Describes the product itself, as seen in your inspection)
+        {
+            "@type": "WebApplication",
+            "name": SITE_NAME,
+            "url": SITE_URL,
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "All",
+            "author": {
+                "@type": "Group",
+                "name": "Aditya Choudhary, Suraj Mishra, Amrita Yadav, Sachin Maurya" 
+            },
+            "description": "A modern MERN stack quiz platform for creating and taking interactive quizzes.",
+            // Replace with your actual screenshot URL
+            "screenshot": "https://i.ibb.co/example-screenshot.png" 
+        },
+        
+        // 3. Organization Schema (To define the entity/brand behind the site)
+        {
+            "@type": "Organization",
+            "name": SITE_NAME,
+            "url": SITE_URL,
+            "logo": LOGO_URL,
+            "sameAs": [
+                "https://github.com/AdityaChoudhary01/ParikshaNode", 
+                "https://www.instagram.com/aditya_choudhary__021/",
+                "https://www.linkedin.com/in/aditya-kumar-38093a304/"
+            ]
+        }
+    ]
+};
+
     if (quizzesLoading || historyLoading) return <Loader />;
     if (error) return <p className="text-center text-destructive">Error: {error}</p>;
 
     return (
         <>
-            <Helmet>
-                {/* SEO Tags (Preserved) */}
-                <title>{MAIN_TITLE}</title>
-                <meta name="description" content={MAIN_DESCRIPTION} />
-                <link rel="canonical" href={SITE_URL} />
-                <meta property="og:title" content={MAIN_TITLE} />
-                <meta property="og:image" content={LOGO_URL} />
-                <meta name="twitter:image" content={LOGO_URL} /> 
-                <script type="application/ld+json">
-                    {JSON.stringify(schemaMarkup)}
-                </script>
-            </Helmet>
+        <Helmet>
+    {/* 1. Primary Tags */}
+    <title>{MAIN_TITLE}</title>
+    <meta name="description" content={MAIN_DESCRIPTION} />
+    <link rel="canonical" href={SITE_URL} />
+
+    {/* 2. Open Graph (Social Sharing) */}
+    <meta property="og:title" content={MAIN_TITLE} />
+    <meta property="og:description" content={MAIN_DESCRIPTION} /> 
+    <meta property="og:type" content="website" />         {/* <-- ADDED */}
+    <meta property="og:url" content={SITE_URL} />           {/* <-- ADDED (For completeness) */}
+    <meta property="og:image" content={LOGO_URL} />
+
+    {/* 3. Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" /> {/* <-- ADDED */}
+    <meta name="twitter:image" content={LOGO_URL} /> 
+    
+    {/* 4. Structured Data (The most critical part for your Site Name issue) */}
+    <script type="application/ld+json">
+        {JSON.stringify(schemaMarkup)}
+    </script>
+</Helmet>
 
             {/* Background Enhancement for Depth */}
             {/* FIX: Added px-0 to the container to eliminate default 1rem mobile padding */}
