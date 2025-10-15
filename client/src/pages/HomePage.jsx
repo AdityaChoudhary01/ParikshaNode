@@ -187,11 +187,11 @@ const HomePage = () => {
 const schemaMarkup = {
     "@context": "https://schema.org",
     "@graph": [
-        // 1. WebSite Schema (Explicitly uses short name and alternate for maximum authority)
+        // 1. WebSite Schema (Crucial for Site Name fix)
         {
             "@type": "WebSite",
             "name": SITE_NAME_SHORT, 
-            "alternateName": SITE_NAME_FULL, // Strong signal to Google to use this as Site Name
+            "alternateName": SITE_NAME_FULL, // Added to force Google to use ParikshaNode
             "url": SITE_URL,
             "description": MAIN_DESCRIPTION,
             "potentialAction": {
@@ -201,7 +201,7 @@ const schemaMarkup = {
             }
         },
         
-        // 2. WebApplication Schema
+        // 2. WebApplication Schema (Includes 'offers' fix for Rich Results)
         {
             "@type": "WebApplication",
             "name": SITE_NAME_SHORT,
@@ -213,7 +213,13 @@ const schemaMarkup = {
                 "name": "Aditya Choudhary, Suraj Mishra, Amrita Yadav, Sachin Maurya" 
             },
             "description": "A modern MERN stack quiz platform for creating and taking interactive quizzes.",
-            "screenshot": "https://i.ibb.co/example-screenshot.png" 
+            "screenshot": "https://i.ibb.co/example-screenshot.png", 
+            "offers": { // Added to resolve the non-critical warning (Free app)
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "The base application is free to use."
+            }
         },
         
         // 3. Organization Schema
@@ -230,7 +236,6 @@ const schemaMarkup = {
         }
     ]
 };
-
     if (quizzesLoading || historyLoading) return <Loader />;
     if (error) return <p className="text-center text-destructive">Error: {error}</p>;
 
