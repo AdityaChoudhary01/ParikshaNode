@@ -65,10 +65,10 @@ UltraButton.displayName = 'UltraButton';
 // --- END: CUSTOM ULTRA-MODERN BUTTON COMPONENT ---
 
 // SEO CONSTANTS (PRESERVED)
-const SITE_NAME = "ParikshaNode";
+const SITE_NAME_SHORT = "ParikshaNode";
+const SITE_NAME_FULL = "ParikshaNode | Master Any Subject, One Quiz at a Time"; // Your desired page title
 const SITE_URL = "https://parikshanode.netlify.app/";
 const LOGO_URL = "https://parikshanode.netlify.app/logo.png";
-const MAIN_TITLE = `${SITE_NAME} | Master Any Subject, One Quiz at a Time`;
 const MAIN_DESCRIPTION = "ParikshaNode is the ultimate MERN quiz platform for students and pros. Create quizzes, track deep analytics, and join ad-free live battles.";
 // --- START: useDebounce Hook Definition (Preserved) ---
 const useDebounce = (value, delay) => {
@@ -183,16 +183,17 @@ const HomePage = () => {
         setShowApkButton(false);
     };
 
-  const schemaMarkup = {
+  // --- SCHEMA MARKUP (Use this to replace your existing schemaMarkup object) ---
+const schemaMarkup = {
     "@context": "https://schema.org",
     "@graph": [
-        // 1. WebSite Schema (The strongest signal for the Site Name in Google Search)
+        // 1. WebSite Schema (Explicitly uses short name and alternate for maximum authority)
         {
             "@type": "WebSite",
-            "name": SITE_NAME,
+            "name": SITE_NAME_SHORT, 
+            "alternateName": SITE_NAME_FULL, // Strong signal to Google to use this as Site Name
             "url": SITE_URL,
             "description": MAIN_DESCRIPTION,
-            // Adds support for the Sitelinks Searchbox in Google
             "potentialAction": {
                 "@type": "SearchAction",
                 "target": `${SITE_URL}search?q={search_term_string}`,
@@ -200,10 +201,10 @@ const HomePage = () => {
             }
         },
         
-        // 2. WebApplication Schema (Describes the product itself, as seen in your inspection)
+        // 2. WebApplication Schema
         {
             "@type": "WebApplication",
-            "name": SITE_NAME,
+            "name": SITE_NAME_SHORT,
             "url": SITE_URL,
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "All",
@@ -212,14 +213,13 @@ const HomePage = () => {
                 "name": "Aditya Choudhary, Suraj Mishra, Amrita Yadav, Sachin Maurya" 
             },
             "description": "A modern MERN stack quiz platform for creating and taking interactive quizzes.",
-            // Replace with your actual screenshot URL
             "screenshot": "https://i.ibb.co/example-screenshot.png" 
         },
         
-        // 3. Organization Schema (To define the entity/brand behind the site)
+        // 3. Organization Schema
         {
             "@type": "Organization",
-            "name": SITE_NAME,
+            "name": SITE_NAME_SHORT,
             "url": SITE_URL,
             "logo": LOGO_URL,
             "sameAs": [
@@ -236,21 +236,21 @@ const HomePage = () => {
 
     return (
         <>
-        <Helmet>
+       <Helmet>
     {/* 1. Primary Tags */}
-    <title>{MAIN_TITLE}</title>
+    <title>{SITE_NAME_FULL}</title>
     <meta name="description" content={MAIN_DESCRIPTION} />
     <link rel="canonical" href={SITE_URL} />
 
     {/* 2. Open Graph (Social Sharing) */}
-    <meta property="og:title" content={MAIN_TITLE} />
+    <meta property="og:title" content={SITE_NAME_FULL} />
     <meta property="og:description" content={MAIN_DESCRIPTION} /> 
-    <meta property="og:type" content="website" />         {/* <-- ADDED */}
-    <meta property="og:url" content={SITE_URL} />           {/* <-- ADDED (For completeness) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={SITE_URL} />
     <meta property="og:image" content={LOGO_URL} />
 
     {/* 3. Twitter Card */}
-    <meta name="twitter:card" content="summary_large_image" /> {/* <-- ADDED */}
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={LOGO_URL} /> 
     
     {/* 4. Structured Data (The most critical part for your Site Name issue) */}
@@ -258,7 +258,6 @@ const HomePage = () => {
         {JSON.stringify(schemaMarkup)}
     </script>
 </Helmet>
-
             {/* Background Enhancement for Depth */}
             {/* FIX: Added px-0 to the container to eliminate default 1rem mobile padding */}
             <div className="space-y-24 md:space-y-32 container px-0 py-4 md:py-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-color-background)_60%,_var(--tw-color-primary)/10)] min-h-screen">
