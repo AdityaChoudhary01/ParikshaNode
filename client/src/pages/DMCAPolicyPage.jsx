@@ -60,7 +60,7 @@ const DMCAPolicyPage = () => {
                         </p>
                         <div className="p-4 rounded-xl bg-secondary/50 border border-primary/30 shadow-inner">
                             <p className="text-lg font-bold text-foreground">To submit a formal Takedown Notice, email:</p>
-                            <a href={`mailto:${DMCA_AGENT_EMAIL}`} className="text-2xl font-extrabold text-destructive hover:underline transition-colors block mt-2">
+                            <a href={`mailto:${DMCA_AGENT_EMAIL}`} className="text-2xl font-extrabold text-destructive hover:underline transition-colors block mt-2 break-all">
                                 {DMCA_AGENT_EMAIL}
                             </a>
                         </div>
