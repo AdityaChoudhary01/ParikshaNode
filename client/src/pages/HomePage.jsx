@@ -680,7 +680,7 @@ const HomePage = () => {
                             onClick={handleHideApkButton}
                             size="icon"
                             variant="destructive"
-                            className="absolute -top-4 -right-4 h-12 w-12 rounded-full shadow-3xl z-50 transition-transform duration-300 bg-destructive/90 hover:bg-destructive ring-4 ring-background/80 hover:scale-125 border-4 border-destructive/10"
+                            className="absolute -top-4 -right-4 h-8 w-8 rounded-full shadow-3xl z-50 transition-transform duration-300 bg-destructive/90 hover:bg-destructive ring-4 ring-background/80 hover:scale-125 border-4 border-destructive/10"
                             aria-label="Hide APK Download Button"
                         >
                             <X className="h-6 w-6" />
@@ -696,10 +696,9 @@ const HomePage = () => {
                             <UltraButton
                                 variant="destructive"
                                 size="sm"
-                                className="h-16 px-8 text-xl rounded-full bg-gradient-to-r from-destructive/90 to-red-600/90 shadow-2xl shadow-destructive/80 hover:shadow-destructive/90 transition-all duration-500 hover:scale-[1.05] ring-4 ring-destructive/30"
+                                className="h-12 px-4 text-xl rounded-full bg-gradient-to-r from-destructive/90 to-red-600/90 shadow-2xl shadow-destructive/80 hover:shadow-destructive/90 transition-all duration-500 hover:scale-[1.05] ring-4 ring-destructive/30"
                             >
                                 <Download className="h-6 w-6 mr-3 animate-bounce" />
-                                APK
                             </UltraButton>
                         </a>
                     </div>
