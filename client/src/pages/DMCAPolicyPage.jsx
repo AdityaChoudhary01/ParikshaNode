@@ -37,7 +37,7 @@ const DMCAPolicyPage = () => {
                 <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
             </Helmet>
 
-            <div className="max-w-4xl mx-auto space-y-10 py-8 p-4 sm:p-6 lg:p-8">
+            <div className="max-w-4xl mx-auto space-y-10 px-0 py-8 p-4 sm:p-6 lg:p-8">
                 
                 {/* Header */}
                 <header className="text-center animate-in fade-in slide-in-from-top-10 duration-700">
