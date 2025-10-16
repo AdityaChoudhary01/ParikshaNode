@@ -257,7 +257,7 @@ const HomePage = () => {
             
             {/* Background Enhancement for Depth */}
             {/* FIX: Removed px-0 from container for better mobile padding consistency with standard container use */}
-            <div className="space-y-24 md:space-y-32 container py-4 md:py-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-color-background)_60%,_var(--tw-color-primary)/10)] min-h-screen">
+            <div className="space-y-24 md:space-y-32 container px-0 py-4 md:py-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-color-background)_60%,_var(--tw-color-primary)/10)] min-h-screen">
                 
                 {/* 🚀 Ultra-Modern Hero Section - (STATIC) */}
                 <section
