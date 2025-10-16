@@ -26,6 +26,13 @@ import MyQuizzesPage from '@/pages/MyQuizzesPage';
 import QuizFormPage from '@/pages/QuizFormPage';
 import QuizReportPage from '@/pages/QuizReportPage';
 
+// --- NEW LEGAL PAGE IMPORTS ---
+// Assuming standard page location: '@/pages/{PageName}Page.jsx'
+import DMCAPolicyPage from '@/pages/DMCAPolicyPage';
+import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
+import TermsOfServicePage from '@/pages/TermsOfServicePage';
+// ------------------------------
+
 // Admin Pages
 import AdminLayout from '@/pages/admin/AdminLayout';
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
@@ -33,48 +40,54 @@ import AdminQuizListPage from '@/pages/admin/AdminQuizListPage';
 import AdminUserListPage from '@/pages/admin/AdminUserListPage';
 
 function App() {
-  return (
-    <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          {/* Public Routes */}
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="leaderboard/:quizId" element={<LeaderboardPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="donate" element={<DonatePage />} />
-          <Route path="contact" element={<ContactPage />} />
-          <Route path="quiz/:id" element={<QuizPage />} />
-          <Route path="live-quiz/:quizId" element={<LiveQuizPage />} /> {/* FEATURE 3: NEW ROUTE */}
-          
-          {/* Protected User Routes */}
-          <Route element={<PrivateRoute />}>
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="my-quizzes" element={<MyQuizzesPage />} />
-            <Route path="quiz/new" element={<QuizFormPage />} />
-            <Route path="quiz/edit/:id" element={<QuizFormPage />} />
-            <Route path="results/:id" element={<ResultsPage />} />
-            <Route path="history" element={<HistoryPage />} />
-            <Route path="quiz/report/:quizId" element={<QuizReportPage />} />
-          </Route>
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {/* Public Routes */}
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+          <Route path="leaderboard/:quizId" element={<LeaderboardPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="donate" element={<DonatePage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="quiz/:id" element={<QuizPage />} />
+          <Route path="live-quiz/:quizId" element={<LiveQuizPage />} /> {/* FEATURE 3: NEW ROUTE */}
+          
+            {/* --- NEW LEGAL ROUTES ADDED --- */}
+            <Route path="terms" element={<TermsOfServicePage />} />
+            <Route path="privacy" element={<PrivacyPolicyPage />} />
+            <Route path="dmca" element={<DMCAPolicyPage />} />
+            {/* -------------------------------- */}
 
-          {/* Protected Admin Routes */}
-          <Route path="admin" element={<AdminRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route index element={<AdminDashboardPage />} />
-              <Route path="quizzes" element={<AdminQuizListPage />} />
-              <Route path="users" element={<AdminUserListPage />} />
-            </Route>
-          </Route>
+          {/* Protected User Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="my-quizzes" element={<MyQuizzesPage />} />
+            <Route path="quiz/new" element={<QuizFormPage />} />
+            <Route path="quiz/edit/:id" element={<QuizFormPage />} />
+            <Route path="results/:id" element={<ResultsPage />} />
+            <Route path="history" element={<HistoryPage />} />
+            <Route path="quiz/report/:quizId" element={<QuizReportPage />} />
+          </Route>
 
-          {/* Not Found Route */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} theme="colored" />
-    </>
-  );
+          {/* Protected Admin Routes */}
+          <Route path="admin" element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="quizzes" element={<AdminQuizListPage />} />
+              <Route path="users" element={<AdminUserListPage />} />
+            </Route>
+          </Route>
+
+          {/* Not Found Route */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} theme="colored" />
+    </>
+  );
 }
 
 export default App;
